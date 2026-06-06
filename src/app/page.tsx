@@ -44,21 +44,22 @@ export default async function HomePage() {
         </div>
       )}
 
-      {/* Hero */}
+      {/* Hero — centered + generous air (calm, sacred). Rhythm via varied gaps:
+          tight badge→title, then a deliberate jump before the call to action. */}
       <section className="relative overflow-hidden border-b bg-gradient-to-b from-secondary/60 to-background">
-        <div className="container flex flex-col items-center gap-6 py-20 text-center md:py-28">
+        <div className="container flex flex-col items-center py-[clamp(4.5rem,11vw,9rem)] text-center">
           <span className="rounded-full border bg-background/60 px-4 py-1 text-sm text-muted-foreground">
             พระแท้ ตรวจสอบได้ ชำระเงินปลอดภัย
           </span>
-          <h1 className="text-hero max-w-3xl font-bold">
+          <h1 className="text-hero mt-6 max-w-3xl font-bold">
             {storeName}
             <span className="mt-1 block text-primary">ศูนย์รวมพระเครื่องมงคล</span>
           </h1>
-          <p className="max-w-xl text-balance text-muted-foreground">
+          <p className="mt-5 max-w-xl text-pretty leading-relaxed text-muted-foreground">
             คัดสรรพระเครื่องคุณภาพ พร้อมระบบยืนยันการชำระเงินโดยแอดมิน
             และติดตามสถานะคำสั่งซื้อแบบเรียลไทม์
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Button size="lg" asChild>
               <Link href="/products">เลือกชมพระเครื่อง</Link>
             </Button>
@@ -69,23 +70,30 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Trust badges */}
-      <section className="container grid gap-6 py-12 md:grid-cols-3">
-        {[
-          { icon: BadgeCheck, title: 'พระแท้ คัดสรร', desc: 'ข้อมูลครบ รูปคมชัดทุกองค์' },
-          {
-            icon: ShieldCheck,
-            title: 'ชำระเงินปลอดภัย',
-            desc: 'PromptPay / โอนธนาคาร ยืนยันโดยแอดมิน',
-          },
-          { icon: Truck, title: 'ติดตามได้เรียลไทม์', desc: 'รู้สถานะตั้งแต่จ่ายจนถึงจัดส่ง' },
-        ].map(({ icon: Icon, title, desc }) => (
-          <div key={title} className="rounded-lg border bg-card p-6 text-card-foreground">
-            <Icon className="h-8 w-8 text-primary" />
-            <h2 className="mt-4 text-lg font-semibold">{title}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
-          </div>
-        ))}
+      {/* Trust band — a distinct muted band (rhythm contrast), columns split by
+          hairline dividers rather than repeated boxes. */}
+      <section className="border-b bg-muted/30">
+        <div className="container grid divide-y md:grid-cols-3 md:divide-x md:divide-y-0">
+          {[
+            { icon: BadgeCheck, title: 'พระแท้ คัดสรร', desc: 'ข้อมูลครบ รูปคมชัดทุกองค์' },
+            {
+              icon: ShieldCheck,
+              title: 'ชำระเงินปลอดภัย',
+              desc: 'PromptPay / โอนธนาคาร ยืนยันโดยแอดมิน',
+            },
+            { icon: Truck, title: 'ติดตามได้เรียลไทม์', desc: 'รู้สถานะตั้งแต่จ่ายจนถึงจัดส่ง' },
+          ].map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="flex items-start gap-4 py-8 md:px-8">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Icon className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="font-medium">{title}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
     </>
   );
