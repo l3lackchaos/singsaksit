@@ -6,6 +6,8 @@ import { getProductBySlug } from '@/modules/catalog/repository';
 import { loadSettings } from '@/modules/settings/load';
 import { getSetting } from '@/lib/settings';
 import { StockBadge } from '@/modules/catalog/components/product-card';
+import { WishlistButton } from '@/modules/wishlist/components/wishlist-button';
+import { isInWishlist } from '@/modules/wishlist/repository';
 import { Button } from '@/components/ui/button';
 import { formatThb, satangToBaht } from '@/lib/money';
 import { env } from '@/lib/env';
@@ -38,6 +40,7 @@ export default async function ProductPage({
   const showStock = getSetting('display.showStock');
   const lowStockBadge = getSetting('display.lowStockBadge');
   const soldOut = product.status === 'SOLD_OUT' || product.stock <= 0;
+  const saved = await isInWishlist(product.id);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -126,6 +129,7 @@ export default async function ProductPage({
             <Button size="lg" disabled={soldOut} className="flex-1">
               {soldOut ? 'สินค้าหมด' : 'เพิ่มลงตะกร้า'}
             </Button>
+            <WishlistButton productId={product.id} initialSaved={saved} />
           </div>
           <p className="mt-3 text-xs text-muted-foreground">
             ชำระเงินผ่าน PromptPay / โอนธนาคาร แล้วอัปโหลดสลิปให้แอดมินตรวจสอบ

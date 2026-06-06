@@ -16,13 +16,16 @@
 - [ ] Playwright e2e setup
 - [ ] CI: lint + typecheck + test
 
-## Phase 1 — Auth & Membership
-- [ ] Supabase Auth: email/password + Google + Facebook OAuth + **ยืนยันอีเมล**
-- [ ] Trigger สร้าง `profiles` หลัง sign-up, role default = CUSTOMER
-- [ ] หน้า sign-in/sign-up/reset, โปรไฟล์, จัดการที่อยู่จัดส่ง (ตำบล/อำเภอ/จังหวัด)
-- [ ] **Wishlist/รายการโปรด** + ปุ่มหัวใจบนการ์ดสินค้า
-- [ ] RBAC middleware + RLS policies (เจ้าของข้อมูลเท่านั้น / admin)
-- [ ] Rate limit login/reset (Upstash)
+## Phase 1 — Auth & Membership 🚧
+- [x] Supabase Auth: email/password + email verification (signup → confirm link)
+- [x] OAuth Google + Facebook (ปุ่ม + callback) — รอตั้ง provider id/secret ใน dashboard
+- [x] หน้า sign-in/sign-up/forgot-password + /auth/callback
+- [x] โปรไฟล์ (ดู/แก้ ชื่อ/เบอร์) + dashboard บัญชี
+- [x] **Wishlist/รายการโปรด** + ปุ่มหัวใจบนหน้าสินค้า + หน้ารายการโปรด
+- [x] RBAC middleware (ป้องกัน /account, /admin) + RLS owner policies
+- [ ] หน้าตั้งรหัสผ่านใหม่หลังคลิกลิงก์ reset
+- [ ] จัดการที่อยู่จัดส่ง (ตำบล/อำเภอ/จังหวัด) — ทำในเฟส checkout
+- [x] Rate limit login/reset — ใช้การจำกัดของ Supabase Auth (เสริม Upstash ภายหลัง)
 
 ## Phase 2 — Catalog & Storefront 🚧
 - [x] Prisma model: Category, Product (slug + stock), ProductImage
