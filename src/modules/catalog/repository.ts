@@ -1,9 +1,12 @@
+import { unstable_cache } from 'next/cache';
 import { createSupabasePublicClient } from '@/lib/supabase/public';
 import type { CategoryItem, ProductDetail, ProductListItem } from './types';
 
-// Read-side repository for the catalog. Public reads are governed by RLS
-// (only ACTIVE/SOLD_OUT products are visible to anon). Server-side mutations will
-// move through a service layer once privileged DB access (service role / Prisma) is wired.
+// Read-side repository for the catalog. Public reads are RLS-governed (only
+// ACTIVE/SOLD_OUT are visible to anon) and cached with Next.js cache tags;
+// admin mutations call revalidateTag(CATALOG_TAG) to invalidate.
+
+export const CATALOG_TAG = 'catalog';
 
 interface ProductRow {
   id: string;
@@ -21,7 +24,7 @@ const LIST_SELECT = `${LIST_COLUMNS},ProductImage(storagePath,sortOrder)`;
 
 export type ProductSort = 'new' | 'price_asc' | 'price_desc';
 
-export async function listActiveProducts(options?: {
+async function fetchProducts(options?: {
   search?: string;
   categorySlug?: string;
   sort?: ProductSort;
@@ -59,7 +62,22 @@ export async function listActiveProducts(options?: {
   return (data ?? []).map((row) => mapListItem(row as ProductRow));
 }
 
-export async function getProductBySlug(slug: string): Promise<ProductDetail | null> {
+export async function listActiveProducts(options?: {
+  search?: string;
+  categorySlug?: string;
+  sort?: ProductSort;
+}): Promise<ProductListItem[]> {
+  // Search results are high-cardinality — fetch live; cache the browse views.
+  if (options?.search) return fetchProducts(options);
+  const cat = options?.categorySlug ?? 'all';
+  const sort = options?.sort ?? 'new';
+  return unstable_cache(() => fetchProducts({ categorySlug: options?.categorySlug, sort: options?.sort }), ['catalog-list', cat, sort], {
+    tags: [CATALOG_TAG],
+    revalidate: 300,
+  })();
+}
+
+async function fetchProductBySlug(slug: string): Promise<ProductDetail | null> {
   const sb = createSupabasePublicClient();
   const { data, error } = await sb
     .from('Product')
@@ -78,7 +96,6 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     attributes: Record<string, string> | null;
     seoTitle: string | null;
     seoDescription: string | null;
-    // Supabase types an embedded to-one as an object at runtime; allow either shape.
     Category: { name: string } | { name: string }[] | null;
   };
 
@@ -99,21 +116,40 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   };
 }
 
+export async function getProductBySlug(slug: string): Promise<ProductDetail | null> {
+  return unstable_cache(() => fetchProductBySlug(slug), ['product-by-slug', slug], {
+    tags: [CATALOG_TAG, `product:${slug}`],
+    revalidate: 300,
+  })();
+}
+
 export async function listActiveProductSlugs(): Promise<string[]> {
-  const sb = createSupabasePublicClient();
-  const { data, error } = await sb
-    .from('Product')
-    .select('slug')
-    .in('status', ['ACTIVE', 'SOLD_OUT']);
-  if (error) throw error;
-  return (data ?? []).map((r) => (r as { slug: string }).slug);
+  return unstable_cache(
+    async () => {
+      const sb = createSupabasePublicClient();
+      const { data, error } = await sb
+        .from('Product')
+        .select('slug')
+        .in('status', ['ACTIVE', 'SOLD_OUT']);
+      if (error) throw error;
+      return (data ?? []).map((r) => (r as { slug: string }).slug);
+    },
+    ['product-slugs'],
+    { tags: [CATALOG_TAG], revalidate: 300 },
+  )();
 }
 
 export async function listCategories(): Promise<CategoryItem[]> {
-  const sb = createSupabasePublicClient();
-  const { data, error } = await sb.from('Category').select('id,slug,name').order('name');
-  if (error) throw error;
-  return (data ?? []) as CategoryItem[];
+  return unstable_cache(
+    async () => {
+      const sb = createSupabasePublicClient();
+      const { data, error } = await sb.from('Category').select('id,slug,name').order('name');
+      if (error) throw error;
+      return (data ?? []) as CategoryItem[];
+    },
+    ['categories'],
+    { tags: [CATALOG_TAG], revalidate: 600 },
+  )();
 }
 
 function mapListItem(row: ProductRow): ProductListItem {

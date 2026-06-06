@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { sendTemplate } from '@/lib/email';
 import { formatThb } from '@/lib/money';
+import { checkRateLimit, rateLimitId } from '@/lib/rate-limit';
 
 const addressSchema = z.object({
   recipient: z.string().min(1).max(120),
@@ -44,6 +45,12 @@ export async function createOrderAction(
   } = await sb.auth.getUser();
   if (!user) return { error: 'กรุณาเข้าสู่ระบบก่อนสั่งซื้อ' };
 
+  const ok = await checkRateLimit('order', await rateLimitId(user.id), {
+    limit: 15,
+    windowSec: 60,
+  });
+  if (!ok) return { error: 'ทำรายการบ่อยเกินไป โปรดลองใหม่อีกครั้งในอีกสักครู่' };
+
   const { data, error } = await sb.rpc('create_order', {
     p_items: parsed.data.items,
     p_address: parsed.data.address,
@@ -78,6 +85,9 @@ export async function submitSlipAction(
   slipPath: string,
 ): Promise<{ error?: string }> {
   const sb = await createSupabaseServerClient();
+  const ok = await checkRateLimit('slip', await rateLimitId(), { limit: 20, windowSec: 60 });
+  if (!ok) return { error: 'อัปโหลดบ่อยเกินไป โปรดลองใหม่อีกครั้ง' };
+
   const { error } = await sb.rpc('submit_payment_slip', {
     p_order_id: orderId,
     p_slip_path: slipPath,

@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { env } from '@/lib/env';
 import { emailSchema, signInSchema, signUpSchema } from './schema';
+import { checkRateLimit, rateLimitId } from '@/lib/rate-limit';
 
 export interface AuthState {
   error?: string;
@@ -24,6 +25,9 @@ export async function signInAction(
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? 'ข้อมูลไม่ถูกต้อง' };
   }
+
+  const ok = await checkRateLimit('signin', await rateLimitId(), { limit: 10, windowSec: 60 });
+  if (!ok) return { error: 'พยายามเข้าสู่ระบบบ่อยเกินไป โปรดลองใหม่ในอีกสักครู่' };
 
   const sb = await createSupabaseServerClient();
   const { error } = await sb.auth.signInWithPassword(parsed.data);

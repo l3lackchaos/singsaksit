@@ -1,9 +1,10 @@
 'use server';
 
 import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/auth';
+import { CATALOG_TAG } from '@/modules/catalog/repository';
 import { bahtToSatang } from '@/lib/money';
 import { slugify } from '@/modules/catalog/slug';
 import { sanitizeRichText } from '@/lib/sanitize';
@@ -38,6 +39,7 @@ export async function confirmPaymentAction(orderId: string): Promise<ActionResul
   const { error } = await sb.rpc('confirm_payment', { p_order_id: orderId });
   revalidatePath('/admin/payments');
   revalidatePath('/admin/orders');
+  revalidateTag(CATALOG_TAG);
   if (error) return { error: error.message };
   const rcpt = await orderRecipient(sb, orderId);
   if (rcpt.email) await sendTemplate(rcpt.email, 'payment_confirmed', { orderNo: rcpt.orderNo });
@@ -64,6 +66,7 @@ export async function refundOrderAction(orderId: string): Promise<ActionResult> 
   const sb = await createSupabaseServerClient();
   const { error } = await sb.rpc('refund_order', { p_order_id: orderId });
   revalidatePath(`/admin/orders/${orderId}`);
+  revalidateTag(CATALOG_TAG);
   if (error) return { error: error.message };
   return { success: 'คืนเงินและคืนสต็อกแล้ว' };
 }
@@ -152,6 +155,7 @@ export async function upsertProductAction(
 
   revalidatePath('/admin/products');
   revalidatePath('/products');
+  revalidateTag(CATALOG_TAG);
   await logAudit(parsed.data.id ? 'update_product' : 'create_product', 'Product', parsed.data.id, {
     title: parsed.data.title,
   });
@@ -346,6 +350,7 @@ export async function addProductImageAction(
   if (error) return { error: error.message };
   revalidatePath(`/admin/products/${productId}`);
   revalidatePath('/products');
+  revalidateTag(CATALOG_TAG);
   return { success: 'เพิ่มรูปแล้ว' };
 }
 
@@ -360,6 +365,7 @@ export async function deleteProductImageAction(
   await sb.storage.from('products').remove([path]);
   revalidatePath(`/admin/products/${productId}`);
   revalidatePath('/products');
+  revalidateTag(CATALOG_TAG);
 }
 
 export async function updateEmailTemplateAction(

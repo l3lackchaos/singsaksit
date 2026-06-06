@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/auth';
 import { stripTags } from '@/lib/sanitize';
+import { checkRateLimit, rateLimitId } from '@/lib/rate-limit';
 
 export interface ReviewState {
   error?: string;
@@ -27,6 +28,9 @@ export async function submitReviewAction(
     comment: formData.get('comment') ?? '',
   });
   if (!parsed.success) return { error: 'ข้อมูลรีวิวไม่ถูกต้อง' };
+
+  const ok = await checkRateLimit('review', await rateLimitId(), { limit: 10, windowSec: 60 });
+  if (!ok) return { error: 'ส่งรีวิวบ่อยเกินไป โปรดลองใหม่อีกครั้ง' };
 
   const sb = await createSupabaseServerClient();
   const { error } = await sb.rpc('submit_review', {
