@@ -4,15 +4,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-**Phase 0 done; Phase 2 in progress.** The full verification gate passes
-(`pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`). A live Supabase project
-(`singsaksit`) is provisioned with the full schema, RLS policies, the
-`handle_new_user` trigger, seeded Global Settings, and sample products. The
-storefront (home/hero, catalog, product detail), DB-driven stock display,
-auto `sitemap.xml`/`robots.txt`, and JSON-LD are live and read real data via the
-Supabase anon client under RLS. Remaining phases (auth, cart/checkout, payments,
-shipping/realtime, admin/CMS, marketing, PWA/hardening) are tracked in
-`docs/TASKS.md` with done-criteria in `docs/GOALS.md`.
+**All 8 phases built (core complete).** The full verification gate passes
+(`pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`) plus a Playwright e2e
+smoke suite. A live Supabase project (`singsaksit`) backs the app: full schema,
+RLS on every table, SECURITY DEFINER RPCs for the order domain
+(`create_order`, `confirm_payment`, `reject_payment`, `ship_order`, `refund_order`,
+`submit_review`, `resolve_short_link`, `cancel_expired_orders` via pg_cron),
+`handle_new_user` trigger, private slips bucket, seeded settings + sample products.
+Implemented end-to-end: storefront + search + reviews, auth (email/OAuth) +
+profile + wishlist, cart → checkout → order, Admin-Confirm payments (PromptPay QR
+/ bank + slip upload + admin review with atomic oversell-safe stock), shipping +
+realtime, admin (dashboard, slip queue, orders/ship/refund, products, coupons,
+CMS pages/banners, reviews, short links, settings), SEO (auto sitemap/robots/
+JSON-LD), PDPA consent + gated analytics, and PWA. Remaining tail (email sending,
+AuditLog wiring, Upstash cache/rate-limit, Sentry, address book, role UI, full
+purchase-path e2e) is tracked in `docs/TASKS.md`; done-criteria in `docs/GOALS.md`.
+
+> **Setup to go live:** configure OAuth providers (Google/Facebook) + Resend +
+> analytics IDs in the dashboard/env, and promote one user to `ADMIN`.
 
 > **Data access today:** public reads use the Supabase anon client (RLS-enforced).
 > Privileged server writes / admin / Prisma-runtime need one secret in `.env`

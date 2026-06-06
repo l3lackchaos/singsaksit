@@ -13,8 +13,8 @@
 - [x] **Skeleton components** + แบบแผน `loading.tsx` (Suspense)
 - [x] **GlobalSetting** typed accessor + unit test
 - [x] เชื่อม Supabase จริง (project `singsaksit`, anon client) + apply schema + RLS + seed
-- [ ] Playwright e2e setup
-- [ ] CI: lint + typecheck + test
+- [x] Playwright e2e setup (smoke suite, 5 tests)
+- [x] CI: lint + typecheck + test (GitHub Actions)
 
 ## Phase 1 — Auth & Membership 🚧
 - [x] Supabase Auth: email/password + email verification (signup → confirm link)
@@ -23,7 +23,7 @@
 - [x] โปรไฟล์ (ดู/แก้ ชื่อ/เบอร์) + dashboard บัญชี
 - [x] **Wishlist/รายการโปรด** + ปุ่มหัวใจบนหน้าสินค้า + หน้ารายการโปรด
 - [x] RBAC middleware (ป้องกัน /account, /admin) + RLS owner policies
-- [ ] หน้าตั้งรหัสผ่านใหม่หลังคลิกลิงก์ reset
+- [x] หน้าตั้งรหัสผ่านใหม่หลังคลิกลิงก์ reset
 - [ ] จัดการที่อยู่จัดส่ง (ตำบล/อำเภอ/จังหวัด) — ทำในเฟส checkout
 - [x] Rate limit login/reset — ใช้การจำกัดของ Supabase Auth (เสริม Upstash ภายหลัง)
 
@@ -36,7 +36,7 @@
 - [ ] auto-slug จาก title ตอนสร้างใน admin (กัน duplicate)
 - [ ] อัปโหลด+optimize รูปสินค้า (Supabase Storage + next/image)
 - [ ] Cache catalog ด้วย cache tags + Redis
-- [ ] **Reviews**: ให้คะแนน/รีวิว (เฉพาะผู้ซื้อ) + แสดงคะแนนเฉลี่ย + AggregateRating
+- [x] **Reviews**: ให้คะแนน/รีวิว (เฉพาะผู้ซื้อ, RPC) + คะแนนเฉลี่ย + AggregateRating + moderation
 
 ## Phase 3 — Cart, Checkout & Orders ✅🚧
 - [x] Cart (localStorage) + หน้า cart + checkout
@@ -45,15 +45,15 @@
 - [x] **Coupon** engine (PERCENT/FIXED/FREE_SHIPPING) + ใช้ใน create_order; ค่าจัดส่ง/ส่งฟรี
 - [x] State machine + ตัดสต็อก atomic กัน oversell (ทดสอบจริงผ่าน)
 - [ ] บันทึก CouponRedemption + per-user limit
-- [ ] Scheduled job: auto-cancel ออร์เดอร์ที่เลย `payment.expiryHours`
+- [x] Scheduled job: auto-cancel ออร์เดอร์ที่เลย `payment.expiryHours` (pg_cron)
 
 ## Phase 4 — Payments (Admin Confirm) ★ หัวใจ ✅🚧
 - [x] สร้าง PromptPay QR ตามยอด + แสดงเลขบัญชีธนาคาร (จาก GlobalSetting)
 - [x] อัปโหลดสลิป (private bucket + signed URL) → Payment `PENDING_REVIEW`
 - [x] คิวตรวจสลิปของ admin (realtime): ยืนยัน/ปฏิเสธ + เหตุผล
 - [x] ยืนยัน → ตัดสต็อก atomic + Order `PAID` (RPC `confirm_payment`)
-- [ ] คืนเงิน (refund) manual → `REFUNDED` + คืนสต็อก
-- [ ] AuditLog + อีเมลแจ้งทุกสถานะการจ่ายเงิน
+- [x] คืนเงิน (refund) manual → `REFUNDED` + คืนสต็อก (RPC `refund_order` + ปุ่มแอดมิน)
+- [ ] AuditLog + อีเมลแจ้งทุกสถานะการจ่ายเงิน (ต้องตั้ง Resend)
 
 ## Phase 5 — Shipping & Realtime ✅
 - [x] Shipment + carrier/trackingNo (RPC `ship_order`), อัปเดตสถานะส่ง
@@ -65,8 +65,9 @@
 - [x] จัดการสินค้า: list + create/edit (auto-slug, ราคา/สต็อก/สถานะ)
 - [x] คิวตรวจสลิป + ยืนยัน/ปฏิเสธ + จัดส่ง (ship)
 - [x] หน้า **Global Settings** (ชื่อร้าน, แสดงสต็อก, ธีม, PromptPay, ค่าส่ง, feature flags)
-- [ ] CMS: หน้า, แบนเนอร์, เนื้อหา hero
-- [ ] จัดการ EmailTemplate / Coupon / Moderation รีวิว / จัดการ role
+- [x] CMS: หน้า (sanitized) + แบนเนอร์หน้าแรก
+- [x] จัดการ Coupon + Moderation รีวิว
+- [ ] จัดการ EmailTemplate / จัดการ role (ผ่าน UI)
 
 ## Phase 7 — Marketing, SEO & Analytics ✅🚧
 - [x] **auto sitemap.xml** (จากสินค้าใน DB) + robots.txt (noindex หน้า private) + JSON-LD Product/Offer
@@ -79,7 +80,8 @@
 ## Phase 8 — Hardening, PWA & Launch 🚧
 - [x] **PWA**: manifest + service worker (SWR แคช หน้า public, online-only สำหรับ checkout/admin/auth)
 - [ ] **Error monitoring** (Sentry) client/server + data retention job (ลบสลิปเกินกำหนด)
-- [ ] เทส e2e flow หลัก (checkout → จ่าย → ยืนยัน → ส่ง)
+- [x] เทส e2e smoke (home, catalog, product, auth guard, robots/sitemap)
+- [ ] เทส e2e flow เต็ม (checkout → จ่าย → ยืนยัน → ส่ง) ด้วยผู้ใช้จริง
 - [ ] ตรวจ a11y (WCAG 2.1 AA) + Lighthouse ≥ 90
 - [ ] ตรวจ RLS/permission ครบ, rate limit จุดสำคัญ
 - [ ] ตั้งค่า production (Vercel + Supabase), โดเมน, monitoring
