@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { formatThb } from '@/lib/money';
+import { productImageUrl } from '@/lib/supabase/storage';
 import type { ProductListItem } from '../types';
 
 export function StockBadge({
@@ -56,14 +58,26 @@ export function ProductCard({
     >
       <div
         className={cn(
-          'relative aspect-square w-full bg-gradient-to-br from-secondary to-muted',
+          'relative aspect-square w-full overflow-hidden bg-gradient-to-br from-secondary to-muted',
           soldOut && 'opacity-70',
         )}
-        aria-hidden="true"
       >
-        <span className="absolute inset-0 flex items-center justify-center text-4xl font-bold text-primary/30">
-          พระ
-        </span>
+        {product.imagePath ? (
+          <Image
+            src={productImageUrl(product.imagePath)}
+            alt={product.title}
+            fill
+            sizes="(max-width: 768px) 50vw, 25vw"
+            className="object-cover transition-transform group-hover:scale-105"
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 flex items-center justify-center text-4xl font-bold text-primary/30"
+          >
+            พระ
+          </span>
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <h3 className="line-clamp-2 font-medium leading-snug group-hover:text-primary">

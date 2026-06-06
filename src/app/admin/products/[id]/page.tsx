@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
-import { getProduct } from '@/modules/admin/repository';
+import { getProduct, getProductImages } from '@/modules/admin/repository';
 import { ProductForm } from '@/modules/admin/components/product-form';
+import { ProductImages } from '@/modules/admin/components/product-images';
 import { satangToBaht } from '@/lib/money';
 
 export default async function EditProductPage({
@@ -9,13 +10,14 @@ export default async function EditProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = await getProduct(id);
+  const [product, images] = await Promise.all([getProduct(id), getProductImages(id)]);
   if (!product) notFound();
 
   return (
-    <div>
+    <div className="space-y-6">
       <h1 className="text-2xl font-bold tracking-tight">แก้ไขสินค้า</h1>
-      <div className="mt-6">
+      <ProductImages productId={product.id} images={images} />
+      <div>
         <ProductForm
           defaults={{
             id: product.id,

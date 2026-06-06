@@ -142,6 +142,22 @@ export async function getCmsPage(id: string): Promise<CmsPageRow | null> {
   return (data as CmsPageRow | null) ?? null;
 }
 
+export interface ProductImageRow {
+  id: string;
+  storagePath: string;
+  alt: string;
+}
+
+export async function getProductImages(productId: string): Promise<ProductImageRow[]> {
+  const sb = await createSupabaseServerClient();
+  const { data } = await sb
+    .from('ProductImage')
+    .select('id,storagePath,alt')
+    .eq('productId', productId)
+    .order('sortOrder', { ascending: true });
+  return (data ?? []) as ProductImageRow[];
+}
+
 export interface CouponRow {
   id: string;
   code: string;

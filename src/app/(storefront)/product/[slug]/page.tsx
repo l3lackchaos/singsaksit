@@ -9,6 +9,7 @@ import { StockBadge } from '@/modules/catalog/components/product-card';
 import { WishlistButton } from '@/modules/wishlist/components/wishlist-button';
 import { isInWishlist } from '@/modules/wishlist/repository';
 import { AddToCartButton } from '@/modules/cart/components/add-to-cart-button';
+import { ProductGallery } from '@/modules/catalog/components/product-gallery';
 import { ReviewSection } from '@/modules/reviews/components/review-section';
 import { getRatingSummary } from '@/modules/reviews/repository';
 import { getUser } from '@/lib/auth';
@@ -95,14 +96,7 @@ export default async function ProductPage({
       </nav>
 
       <div className="mt-6 grid gap-8 md:grid-cols-2">
-        <div
-          className="relative aspect-square overflow-hidden rounded-xl bg-gradient-to-br from-secondary to-muted"
-          aria-hidden="true"
-        >
-          <span className="absolute inset-0 flex items-center justify-center text-6xl font-bold text-primary/30">
-            พระ
-          </span>
-        </div>
+        <ProductGallery images={product.images} title={product.title} />
 
         <div>
           {product.categoryName && (

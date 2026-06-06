@@ -11,12 +11,18 @@ export interface ProductListItem {
   imagePath: string | null;
 }
 
+export interface ProductImageItem {
+  path: string;
+  alt: string;
+}
+
 export interface ProductDetail extends ProductListItem {
   description: string;
   attributes: Record<string, string> | null;
   categoryName: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
+  images: ProductImageItem[];
 }
 
 export interface CategoryItem {

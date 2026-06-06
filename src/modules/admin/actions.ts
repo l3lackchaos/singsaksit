@@ -279,6 +279,43 @@ export async function toggleCouponAction(couponId: string, active: boolean): Pro
   revalidatePath('/admin/coupons');
 }
 
+export async function addProductImageAction(
+  productId: string,
+  path: string,
+  alt: string,
+): Promise<ActionResult> {
+  await requireAdmin();
+  const sb = await createSupabaseServerClient();
+  const { count } = await sb
+    .from('ProductImage')
+    .select('*', { count: 'exact', head: true })
+    .eq('productId', productId);
+  const { error } = await sb.from('ProductImage').insert({
+    id: crypto.randomUUID(),
+    productId,
+    storagePath: path,
+    alt,
+    sortOrder: count ?? 0,
+  });
+  if (error) return { error: error.message };
+  revalidatePath(`/admin/products/${productId}`);
+  revalidatePath('/products');
+  return { success: 'เพิ่มรูปแล้ว' };
+}
+
+export async function deleteProductImageAction(
+  imageId: string,
+  productId: string,
+  path: string,
+): Promise<void> {
+  await requireAdmin();
+  const sb = await createSupabaseServerClient();
+  await sb.from('ProductImage').delete().eq('id', imageId);
+  await sb.storage.from('products').remove([path]);
+  revalidatePath(`/admin/products/${productId}`);
+  revalidatePath('/products');
+}
+
 export async function updateSettingsAction(
   _prev: ActionResult,
   formData: FormData,

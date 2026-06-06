@@ -13,9 +13,11 @@ interface ProductRow {
   stock: number;
   lowStockThreshold: number;
   status: ProductListItem['status'];
+  ProductImage?: { storagePath: string; sortOrder: number; alt?: string }[];
 }
 
 const LIST_COLUMNS = 'id,slug,title,price,stock,lowStockThreshold,status';
+const LIST_SELECT = `${LIST_COLUMNS},ProductImage(storagePath,sortOrder)`;
 
 export async function listActiveProducts(options?: {
   search?: string;
@@ -24,7 +26,7 @@ export async function listActiveProducts(options?: {
   const sb = createSupabasePublicClient();
   let query = sb
     .from('Product')
-    .select(LIST_COLUMNS)
+    .select(LIST_SELECT)
     .in('status', ['ACTIVE', 'SOLD_OUT'])
     .order('createdAt', { ascending: false });
 
@@ -42,7 +44,9 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const sb = createSupabasePublicClient();
   const { data, error } = await sb
     .from('Product')
-    .select(`${LIST_COLUMNS},description,attributes,seoTitle,seoDescription,Category(name)`)
+    .select(
+      `${LIST_SELECT},description,attributes,seoTitle,seoDescription,Category(name),ProductImage(storagePath,sortOrder,alt)`,
+    )
     .eq('slug', slug)
     .in('status', ['ACTIVE', 'SOLD_OUT'])
     .maybeSingle();
@@ -60,6 +64,10 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   };
 
   const category = Array.isArray(row.Category) ? row.Category[0] : row.Category;
+  const images = (row.ProductImage ?? [])
+    .slice()
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((img) => ({ path: img.storagePath, alt: img.alt ?? '' }));
 
   return {
     ...mapListItem(row),
@@ -68,6 +76,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
     seoTitle: row.seoTitle,
     seoDescription: row.seoDescription,
     categoryName: category?.name ?? null,
+    images,
   };
 }
 
@@ -89,6 +98,9 @@ export async function listCategories(): Promise<CategoryItem[]> {
 }
 
 function mapListItem(row: ProductRow): ProductListItem {
+  const firstImage = (row.ProductImage ?? [])
+    .slice()
+    .sort((a, b) => a.sortOrder - b.sortOrder)[0];
   return {
     id: row.id,
     slug: row.slug,
@@ -97,6 +109,6 @@ function mapListItem(row: ProductRow): ProductListItem {
     stock: row.stock,
     lowStockThreshold: row.lowStockThreshold,
     status: row.status,
-    imagePath: null,
+    imagePath: firstImage?.storagePath ?? null,
   };
 }
