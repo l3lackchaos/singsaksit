@@ -17,6 +17,7 @@ section with the real, verified commands.
 > - `docs/SPEC.md` — functional + technical spec, data model, key flows
 > - `docs/TASKS.md` — phased delivery roadmap
 > - `docs/DESIGN-PATTERNS.md` — architecture patterns + folder structure
+> - `docs/UX-UI-DESIGN.md` — design system + UX/UI patterns per page
 
 ## What this is
 
