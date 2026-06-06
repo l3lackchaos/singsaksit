@@ -1,10 +1,9 @@
 'use client';
 
-import * as React from 'react';
-import { useRouter } from 'next/navigation';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Copy, UploadCloud } from 'lucide-react';
-import { createSupabaseBrowserClient } from '@/lib/supabase/client';
-import { submitSlipAction } from '@/modules/orders/checkout-actions';
+import { uploadSlipAction, type SlipState } from '@/modules/orders/checkout-actions';
 import { Button } from '@/components/ui/button';
 import { formatThb } from '@/lib/money';
 import type { PaymentMethod, PaymentStatus } from '@/lib/supabase/database.types';
@@ -15,9 +14,18 @@ interface BankAccount {
   number: string;
 }
 
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="mt-3" disabled={pending}>
+      <UploadCloud className="h-4 w-4" />
+      {pending ? 'กำลังอัปโหลด…' : 'ส่งสลิปให้ตรวจสอบ'}
+    </Button>
+  );
+}
+
 export function PaymentPanel({
   orderId,
-  userId,
   method,
   amount,
   status,
@@ -26,7 +34,6 @@ export function PaymentPanel({
   bankAccounts,
 }: {
   orderId: string;
-  userId: string;
   method: PaymentMethod;
   amount: number;
   status: PaymentStatus;
@@ -34,10 +41,7 @@ export function PaymentPanel({
   qrDataUrl: string | null;
   bankAccounts: BankAccount[];
 }) {
-  const router = useRouter();
-  const [file, setFile] = React.useState<File | null>(null);
-  const [error, setError] = React.useState<string | null>(null);
-  const [pending, startTransition] = React.useTransition();
+  const [state, action] = useActionState(uploadSlipAction, {} as SlipState);
 
   if (status === 'PAID') {
     return (
@@ -53,32 +57,6 @@ export function PaymentPanel({
         ⏳ ได้รับสลิปแล้ว กำลังรอแอดมินตรวจสอบ — สถานะจะอัปเดตอัตโนมัติ
       </div>
     );
-  }
-
-  function onUpload() {
-    if (!file) {
-      setError('กรุณาเลือกไฟล์สลิป');
-      return;
-    }
-    setError(null);
-    startTransition(async () => {
-      const supabase = createSupabaseBrowserClient();
-      const ext = file.name.split('.').pop() || 'jpg';
-      const path = `${userId}/${orderId}-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage
-        .from('slips')
-        .upload(path, file, { upsert: true });
-      if (upErr) {
-        setError('อัปโหลดสลิปไม่สำเร็จ');
-        return;
-      }
-      const result = await submitSlipAction(orderId, path);
-      if (result.error) {
-        setError('บันทึกสลิปไม่สำเร็จ');
-        return;
-      }
-      router.refresh();
-    });
   }
 
   return (
@@ -128,20 +106,19 @@ export function PaymentPanel({
         </div>
       )}
 
-      <div className="rounded-lg border p-4">
+      <form action={action} className="rounded-lg border p-4">
+        <input type="hidden" name="orderId" value={orderId} />
         <p className="text-sm font-medium">อัปโหลดสลิปการชำระเงิน</p>
-        {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
+        {state.error && <p className="mt-2 text-sm text-destructive">{state.error}</p>}
         <input
           type="file"
+          name="slip"
           accept="image/*,application/pdf"
-          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          required
           className="mt-3 block w-full text-sm file:mr-3 file:rounded-md file:border file:bg-secondary file:px-3 file:py-1.5 file:text-sm"
         />
-        <Button type="button" className="mt-3" onClick={onUpload} disabled={pending}>
-          <UploadCloud className="h-4 w-4" />
-          {pending ? 'กำลังอัปโหลด…' : 'ส่งสลิปให้ตรวจสอบ'}
-        </Button>
-      </div>
+        <SubmitButton />
+      </form>
     </div>
   );
 }

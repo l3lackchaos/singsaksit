@@ -60,7 +60,6 @@ export default async function OrderDetailPage({
               <h2 className="mb-4 font-semibold">การชำระเงิน</h2>
               <PaymentPanel
                 orderId={order.id}
-                userId={user.id}
                 method={order.payment.method}
                 amount={order.payment.amount}
                 status={order.payment.status}

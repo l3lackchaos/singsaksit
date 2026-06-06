@@ -187,7 +187,7 @@ function Field({
   return (
     <div className="grid gap-2">
       <Label>{label}</Label>
-      <Input value={value} onChange={(e) => onChange(e.target.value)} required />
+      <Input aria-label={label} value={value} onChange={(e) => onChange(e.target.value)} required />
     </div>
   );
 }

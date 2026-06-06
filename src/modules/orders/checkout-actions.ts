@@ -80,21 +80,54 @@ export async function createOrderAction(
   return { orderId };
 }
 
-export async function submitSlipAction(
-  orderId: string,
-  slipPath: string,
-): Promise<{ error?: string }> {
+export interface SlipState {
+  error?: string;
+  ok?: boolean;
+}
+
+// Upload the slip server-side (authenticated session → storage RLS) then advance
+// the payment to PENDING_REVIEW. More reliable than uploading from the browser.
+export async function uploadSlipAction(
+  _prev: SlipState,
+  formData: FormData,
+): Promise<SlipState> {
   const sb = await createSupabaseServerClient();
-  const ok = await checkRateLimit('slip', await rateLimitId(), { limit: 20, windowSec: 60 });
+  const {
+    data: { user },
+  } = await sb.auth.getUser();
+  if (!user) return { error: 'กรุณาเข้าสู่ระบบ' };
+
+  const orderId = String(formData.get('orderId') ?? '');
+  const file = formData.get('slip');
+  if (!orderId || !(file instanceof File) || file.size === 0) {
+    return { error: 'กรุณาเลือกไฟล์สลิป' };
+  }
+  if (file.size > 8 * 1024 * 1024) return { error: 'ไฟล์ใหญ่เกิน 8MB' };
+
+  const ok = await checkRateLimit('slip', await rateLimitId(user.id), {
+    limit: 20,
+    windowSec: 60,
+  });
   if (!ok) return { error: 'อัปโหลดบ่อยเกินไป โปรดลองใหม่อีกครั้ง' };
+
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const path = `${user.id}/${orderId}-${Date.now()}.${ext}`;
+  const buffer = Buffer.from(await file.arrayBuffer());
+
+  const { error: upErr } = await sb.storage.from('slips').upload(path, buffer, {
+    contentType: file.type || 'image/jpeg',
+    upsert: true,
+  });
+  if (upErr) return { error: 'อัปโหลดสลิปไม่สำเร็จ' };
 
   const { error } = await sb.rpc('submit_payment_slip', {
     p_order_id: orderId,
-    p_slip_path: slipPath,
+    p_slip_path: path,
   });
-  if (error) return { error: error.message };
+  if (error) return { error: 'บันทึกสลิปไม่สำเร็จ' };
+
   revalidatePath(`/account/orders/${orderId}`);
-  return {};
+  return { ok: true };
 }
 
 function translateError(message: string): string {
