@@ -30,7 +30,7 @@ src/
     auth/
     cms/                    # pages, banners
     email/                  # templates + sender
-    marketing/              # vouchers, short links, analytics
+    marketing/              # coupons, short links, analytics
     settings/               # global settings (typed accessor)
     each module: { components/, actions.ts, service.ts, repository.ts, schema.ts (zod) }
   components/ui/            # shadcn/ui primitives ที่ใช้ร่วม

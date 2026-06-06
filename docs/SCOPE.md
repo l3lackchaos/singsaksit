@@ -33,12 +33,12 @@
 - **Shipping**: บันทึกขนส่ง + เลขพัสดุ, อัปเดตสถานะการส่ง, ลูกค้าเห็นแบบ realtime
 - **Admin / CMS**: dashboard, จัดการสินค้า+สต็อก, จัดการเนื้อหา/หน้า/แบนเนอร์, จัดการผู้ใช้,
   ตั้งค่าร้าน, รายงานยอดขาย
-- **Vouchers**: ระบบส่วนลด (เปอร์เซ็นต์/จำนวนเงิน/ส่งฟรี) จำกัดสิทธิ์การใช้ — admin จัดการเอง
+- **Coupons**: ระบบส่วนลด (เปอร์เซ็นต์/จำนวนเงิน/ส่งฟรี) จำกัดสิทธิ์การใช้ — admin จัดการเอง
 - **Global Settings**: ตั้งค่าได้ทั้งระบบจากหลังบ้าน เช่น แสดง/ซ่อนสต็อก, ธีมเริ่มต้น,
   ช่องทางจ่ายเงิน, ค่าจัดส่ง, เปิด/ปิดฟีเจอร์ (ดู SPEC §6)
 - **Email**: เทมเพลตอีเมล (แก้จากหลังบ้าน) + ส่ง transactional (ยืนยันออร์เดอร์/จ่ายเงิน/จัดส่ง)
 - **SEO & Marketing**: metadata/OG, sitemap, robots, JSON-LD, หน้าโปรโมชัน
-  (ใช้ Voucher จากโมดูล Vouchers + short links)
+  (ใช้ Coupon จากโมดูล Coupons + short links)
 - **Analytics/Ads**: GA4, GTM, Meta Pixel, conversion events
 - **Platform services**: cache layer, image optimization, ระบบย่อลิงก์ (short links) + สถิติคลิก
 - **A11y & Theming**: WCAG 2.1 AA, keyboard nav, light/dark/system theme (สลับได้),

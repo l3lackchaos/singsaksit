@@ -64,8 +64,8 @@ shadcn/ui (Radix) + Tailwind โดยถือ a11y, light/dark, และ skel
 - โหลด: skeleton สำหรับรายละเอียด, ภาพใช้ blur placeholder
 
 ### Cart / Checkout
-- สรุปรายการ + ยอดรวม (subtotal/ส่วนลด voucher/ค่าส่ง/รวมสุทธิ) ชัดเจน
-- ช่องกรอก **voucher** + แสดงผลส่วนลดทันที (optimistic)
+- สรุปรายการ + ยอดรวม (subtotal/ส่วนลด coupon/ค่าส่ง/รวมสุทธิ) ชัดเจน
+- ช่องกรอก **coupon** + แสดงผลส่วนลดทันที (optimistic)
 - Checkout เป็นขั้นตอนชัด: ที่อยู่ → วิธีจ่าย → ยืนยัน; แสดง progress
 - ฟอร์ม inline validation (Zod) ข้อความ error ชัดและผูกกับ field (a11y)
 
@@ -86,7 +86,7 @@ shadcn/ui (Radix) + Tailwind โดยถือ a11y, light/dark, และ skel
 ### Admin / CMS
 - เลย์เอาต์ sidebar + data tables (ค้นหา/กรอง/sort/pagination) + skeleton ตาราง
 - **คิวตรวจสลิป**: รายการรออนุมัติ realtime, ดูสลิปขนาดใหญ่, ปุ่มยืนยัน/ปฏิเสธ + เหตุผล
-- ฟอร์มจัดการสินค้า/หมวด/voucher/หน้า CMS/อีเมลเทมเพลต/global settings
+- ฟอร์มจัดการสินค้า/หมวด/coupon/หน้า CMS/อีเมลเทมเพลต/global settings
 - แสดง toast ยืนยันผล + optimistic update
 
 ## 5. Component states (บังคับมีครบ)

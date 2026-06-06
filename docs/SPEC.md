@@ -25,10 +25,10 @@ data model, state machine, และ flow สำคัญ
 - **Payment** — orderId, method (`PROMPTPAY|BANK_TRANSFER`), amount, status, slipPath,
   paidAt (ลูกค้าแจ้ง), reviewedBy, reviewedAt, rejectReason
 - **Shipment** — orderId, carrier, trackingNo, status, shippedAt, deliveredAt
-- **Voucher** (ระบบส่วนลด) — code, type (`PERCENT|FIXED|FREE_SHIPPING`), value,
+- **Coupon** (ระบบส่วนลด) — code, type (`PERCENT|FIXED|FREE_SHIPPING`), value,
   minTotal, maxDiscount, startsAt, expiresAt, usageLimit (รวม), perUserLimit,
   usedCount, active, scope (`ALL|CATEGORY|PRODUCT` + ref) — admin สร้าง/จัดการได้เอง
-- **VoucherRedemption** — voucherId, userId, orderId, amount, redeemedAt (กันใช้เกินสิทธิ์)
+- **CouponRedemption** — couponId, userId, orderId, amount, redeemedAt (กันใช้เกินสิทธิ์)
 - **GlobalSetting** — key, value (JSON), group, label (key-value config ที่ admin แก้ได้,
   คุมพฤติกรรมทั้งระบบ — ดู §6)
 - **CmsPage / Banner** — slug/title/body (rich), published, sortOrder (admin จัดการ)
@@ -126,7 +126,7 @@ data model, state machine, และ flow สำคัญ
 | `shipping.fee`, `shipping.freeOver` | ค่าจัดส่ง/เกณฑ์ส่งฟรี |
 | `seo.defaultTitle`, `seo.defaultDescription`, `seo.ogImage` | ค่า SEO เริ่มต้น |
 | `analytics.gaId`, `analytics.gtmId`, `analytics.metaPixelId` | tracking IDs |
-| `feature.vouchersEnabled`, `feature.maintenanceMode` | เปิด/ปิดฟีเจอร์ |
+| `feature.couponsEnabled`, `feature.maintenanceMode` | เปิด/ปิดฟีเจอร์ |
 
 **กฎ:** โค้ดที่มีพฤติกรรมต่างกันตามการตั้งค่า ต้องอ่านจาก `GlobalSetting` เสมอ
 ห้าม hard-code ค่าที่ admin ควรปรับได้ มี typed accessor (`getSetting('display.showStock')`)

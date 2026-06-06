@@ -126,5 +126,5 @@ pnpm test:e2e                # Playwright end-to-end
   `SOLD_OUT` at zero.
 - The **sitemap is auto-generated** from DB content (`app/sitemap.ts`) — products,
   categories, and published CMS pages. Don't maintain a static URL list.
-- Discounts go through the **Voucher** system (percent / fixed / free-shipping)
-  with per-user and total usage limits, recorded in `VoucherRedemption`.
+- Discounts go through the **Coupon** system (percent / fixed / free-shipping)
+  with per-user and total usage limits, recorded in `CouponRedemption`.
