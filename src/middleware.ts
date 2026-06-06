@@ -6,6 +6,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Run on everything except static assets and image optimization.
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  // Only run on routes that actually require a session. Public/storefront pages
+  // skip the middleware entirely — no per-request Supabase auth round-trip.
+  matcher: ['/account/:path*', '/admin/:path*', '/checkout/:path*'],
 };
