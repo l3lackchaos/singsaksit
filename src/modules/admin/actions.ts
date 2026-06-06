@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/auth';
 import { bahtToSatang } from '@/lib/money';
 import { slugify } from '@/modules/catalog/slug';
+import { sanitizeRichText } from '@/lib/sanitize';
 
 export interface ActionResult {
   error?: string;
@@ -156,6 +157,126 @@ export async function createShortLinkAction(
 
   revalidatePath('/admin/links');
   return { success: `สร้างลิงก์ /s/${code} แล้ว` };
+}
+
+export async function upsertCmsPageAction(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireAdmin();
+  const schema = z.object({
+    id: z.string().optional(),
+    title: z.string().min(1, 'กรุณากรอกหัวข้อ').max(200),
+    slug: z.string().max(200).optional(),
+    body: z.string().max(50000).optional(),
+    published: z.boolean(),
+  });
+  const parsed = schema.safeParse({
+    id: formData.get('id') || undefined,
+    title: formData.get('title'),
+    slug: formData.get('slug') || undefined,
+    body: formData.get('body') || '',
+    published: formData.get('published') === 'on',
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'ข้อมูลไม่ถูกต้อง' };
+
+  const sb = await createSupabaseServerClient();
+  const payload = {
+    title: parsed.data.title,
+    slug: parsed.data.slug?.trim() || slugify(parsed.data.title),
+    body: sanitizeRichText(parsed.data.body ?? ''),
+    published: parsed.data.published,
+    updatedAt: new Date().toISOString(),
+  };
+
+  if (parsed.data.id) {
+    const { error } = await sb.from('CmsPage').update(payload).eq('id', parsed.data.id);
+    if (error) return { error: error.message };
+  } else {
+    const { error } = await sb.from('CmsPage').insert({ id: crypto.randomUUID(), ...payload });
+    if (error) return { error: 'บันทึกไม่สำเร็จ (slug อาจซ้ำ)' };
+  }
+  revalidatePath('/admin/pages');
+  revalidatePath(`/pages/${payload.slug}`);
+  return { success: 'บันทึกหน้าแล้ว' };
+}
+
+export async function createBannerAction(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireAdmin();
+  const schema = z.object({
+    title: z.string().min(1, 'กรุณากรอกหัวข้อ').max(200),
+    body: z.string().max(500).optional(),
+    href: z.string().max(500).optional(),
+    published: z.boolean(),
+  });
+  const parsed = schema.safeParse({
+    title: formData.get('title'),
+    body: formData.get('body') || '',
+    href: formData.get('href') || '',
+    published: formData.get('published') === 'on',
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'ข้อมูลไม่ถูกต้อง' };
+
+  const sb = await createSupabaseServerClient();
+  const { error } = await sb.from('Banner').insert({
+    id: crypto.randomUUID(),
+    title: parsed.data.title,
+    body: parsed.data.body ?? '',
+    href: parsed.data.href || null,
+    published: parsed.data.published,
+    updatedAt: new Date().toISOString(),
+  });
+  if (error) return { error: error.message };
+  revalidatePath('/admin/banners');
+  revalidatePath('/');
+  return { success: 'เพิ่มแบนเนอร์แล้ว' };
+}
+
+export async function createCouponAction(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireAdmin();
+  const schema = z.object({
+    code: z.string().min(2, 'โค้ดอย่างน้อย 2 ตัว').max(40),
+    type: z.enum(['PERCENT', 'FIXED', 'FREE_SHIPPING']),
+    value: z.coerce.number().int().min(0),
+    minTotalBaht: z.coerce.number().min(0),
+  });
+  const parsed = schema.safeParse({
+    code: formData.get('code'),
+    type: formData.get('type'),
+    value: formData.get('value'),
+    minTotalBaht: formData.get('minTotalBaht'),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'ข้อมูลไม่ถูกต้อง' };
+
+  // For FIXED, value is in baht -> store satang.
+  const value =
+    parsed.data.type === 'FIXED' ? bahtToSatang(parsed.data.value) : parsed.data.value;
+
+  const sb = await createSupabaseServerClient();
+  const { error } = await sb.from('Coupon').insert({
+    id: crypto.randomUUID(),
+    code: parsed.data.code.toUpperCase(),
+    type: parsed.data.type,
+    value,
+    minTotal: bahtToSatang(parsed.data.minTotalBaht),
+    updatedAt: new Date().toISOString(),
+  });
+  if (error) return { error: 'สร้างคูปองไม่สำเร็จ (โค้ดอาจซ้ำ)' };
+  revalidatePath('/admin/coupons');
+  return { success: 'สร้างคูปองแล้ว' };
+}
+
+export async function toggleCouponAction(couponId: string, active: boolean): Promise<void> {
+  await requireAdmin();
+  const sb = await createSupabaseServerClient();
+  await sb.from('Coupon').update({ active, updatedAt: new Date().toISOString() }).eq('id', couponId);
+  revalidatePath('/admin/coupons');
 }
 
 export async function updateSettingsAction(

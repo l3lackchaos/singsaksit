@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { listActiveProductSlugs } from '@/modules/catalog/repository';
+import { listPublishedPageSlugs } from '@/modules/cms/repository';
 import { env } from '@/lib/env';
 
 // Auto-generated from DB content (docs/SPEC.md §8). Never maintain a static URL list.
@@ -25,5 +26,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // If the DB is unreachable at build time, still emit the static routes.
   }
 
-  return [...staticRoutes, ...productRoutes];
+  let pageRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const slugs = await listPublishedPageSlugs();
+    pageRoutes = slugs.map((slug) => ({
+      url: `${base}/pages/${slug}`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    }));
+  } catch {
+    /* ignore */
+  }
+
+  return [...staticRoutes, ...productRoutes, ...pageRoutes];
 }

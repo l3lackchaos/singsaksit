@@ -2,12 +2,36 @@ import Link from 'next/link';
 import { ShieldCheck, BadgeCheck, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getSetting } from '@/lib/settings';
+import { loadSettings } from '@/modules/settings/load';
+import { listPublishedBanners } from '@/modules/cms/repository';
 
-export default function HomePage() {
+export default async function HomePage() {
+  await loadSettings();
   const storeName = getSetting('store.name');
+  const banners = await listPublishedBanners();
 
   return (
     <>
+      {banners.length > 0 && (
+        <div className="border-b bg-primary text-primary-foreground">
+          <div className="container flex flex-wrap items-center justify-center gap-x-2 py-2 text-sm">
+            {banners.map((b) => (
+              <span key={b.id}>
+                {b.href ? (
+                  <Link href={b.href} className="font-medium underline-offset-2 hover:underline">
+                    {b.title} {b.body}
+                  </Link>
+                ) : (
+                  <>
+                    <span className="font-medium">{b.title}</span> {b.body}
+                  </>
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Hero */}
       <section className="relative overflow-hidden border-b bg-gradient-to-b from-secondary/60 to-background">
         <div className="container flex flex-col items-center gap-6 py-20 text-center md:py-28">

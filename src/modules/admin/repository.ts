@@ -114,6 +114,54 @@ export async function getProduct(id: string): Promise<AdminProductRow & { descri
   return (data as (AdminProductRow & { description: string }) | null) ?? null;
 }
 
+export interface CmsPageRow {
+  id: string;
+  slug: string;
+  title: string;
+  body: string;
+  published: boolean;
+}
+
+export async function listCmsPages(): Promise<CmsPageRow[]> {
+  const sb = await createSupabaseServerClient();
+  const { data, error } = await sb
+    .from('CmsPage')
+    .select('id,slug,title,body,published')
+    .order('updatedAt', { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as CmsPageRow[];
+}
+
+export async function getCmsPage(id: string): Promise<CmsPageRow | null> {
+  const sb = await createSupabaseServerClient();
+  const { data } = await sb
+    .from('CmsPage')
+    .select('id,slug,title,body,published')
+    .eq('id', id)
+    .maybeSingle();
+  return (data as CmsPageRow | null) ?? null;
+}
+
+export interface CouponRow {
+  id: string;
+  code: string;
+  type: string;
+  value: number;
+  minTotal: number;
+  active: boolean;
+  usedCount: number;
+}
+
+export async function listCoupons(): Promise<CouponRow[]> {
+  const sb = await createSupabaseServerClient();
+  const { data, error } = await sb
+    .from('Coupon')
+    .select('id,code,type,value,minTotal,active,usedCount')
+    .order('createdAt', { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as CouponRow[];
+}
+
 export interface ShortLinkRow {
   code: string;
   targetUrl: string;
