@@ -58,9 +58,10 @@ shadcn/ui (Radix) + Tailwind โดยถือ a11y, light/dark, และ skel
 
 ### Product detail
 - แกลเลอรีรูป (zoom), ชื่อ, ราคา, สถานะสต็อก, attributes (วัด/รุ่น/ปี/เนื้อ/ขนาด)
-- ปุ่ม "เพิ่มลงตะกร้า"/"ซื้อเลย" เด่น (sticky บนมือถือ)
+- ปุ่ม "เพิ่มลงตะกร้า"/"ซื้อเลย" เด่น (sticky บนมือถือ) + **ปุ่มหัวใจ wishlist**
+- คะแนนเฉลี่ย + ส่วน **รีวิว** (เฉพาะที่อนุมัติแล้ว); ผู้ที่ซื้อจริงเขียนรีวิวได้
 - ข้อมูลความน่าเชื่อถือ: รายละเอียดพระ, การรับประกัน, นโยบายคืนสินค้า
-- SEO: title/description/OG จาก field สินค้า + JSON-LD `Product/Offer`
+- SEO: title/description/OG จาก field สินค้า + JSON-LD `Product/Offer/AggregateRating`
 - โหลด: skeleton สำหรับรายละเอียด, ภาพใช้ blur placeholder
 
 ### Cart / Checkout
@@ -81,7 +82,8 @@ shadcn/ui (Radix) + Tailwind โดยถือ a11y, light/dark, และ skel
 
 ### Account / Membership
 - เข้าสู่ระบบ: email/password + ปุ่ม **Google** / **Facebook** (ชัด แยกจากกัน)
-- โปรไฟล์, ที่อยู่จัดส่ง, ประวัติการสั่งซื้อ
+- โปรไฟล์, ที่อยู่จัดส่ง (ตำบล/อำเภอ/จังหวัด), ประวัติการสั่งซื้อ
+- **รายการโปรด (wishlist)**, รีวิวที่เคยเขียน, จัดการความยินยอม/ลบบัญชี (PDPA)
 
 ### Admin / CMS
 - เลย์เอาต์ sidebar + data tables (ค้นหา/กรอง/sort/pagination) + skeleton ตาราง
@@ -115,7 +117,14 @@ shadcn/ui (Radix) + Tailwind โดยถือ a11y, light/dark, และ skel
 - token สีทั้งหมดมีคู่ light/dark; ทดสอบทุกหน้าทั้งสองโหมด
 - ปุ่มสลับธีมอยู่บน header; ค่าเริ่มต้น + อนุญาตให้สลับ มาจาก `GlobalSetting`
 
-## 8. Performance UX
+## 8. Consent / PDPA UX
+
+- **Cookie consent banner** ตอนเข้าครั้งแรก: เลือก necessary / analytics / marketing
+  (ยอมรับทั้งหมด / ปฏิเสธ / ตั้งค่า) — ไม่ใช้ dark pattern, ปุ่มปฏิเสธชัดเท่าปุ่มยอมรับ
+- tracking script โหลดหลัง consent เท่านั้น; เปลี่ยนใจได้จากลิงก์ "ตั้งค่าคุกกี้" ใน footer
+- หน้านโยบายความเป็นส่วนตัว/ข้อตกลง อ่านง่าย เข้าถึงได้จาก footer ทุกหน้า
+
+## 9. Performance UX
 
 - ภาพผ่าน `next/image` (responsive, WebP/AVIF, blur placeholder, สัดส่วนคงที่)
 - กัน Cumulative Layout Shift: จองพื้นที่ภาพ/skeleton ให้ตรงขนาดจริง

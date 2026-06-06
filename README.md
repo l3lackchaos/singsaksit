@@ -11,7 +11,8 @@
 ## ✨ ฟีเจอร์หลัก
 
 - 🛍️ **ร้านค้า** — แคตตาล็อก, ค้นหา/กรอง, หน้าสินค้า (มี slug), ตะกร้า, checkout
-- 👤 **สมาชิก** — สมัคร/เข้าสู่ระบบด้วย email/password, **Google**, **Facebook**
+- 👤 **สมาชิก** — สมัคร/เข้าสู่ระบบด้วย email/password (ยืนยันอีเมล), **Google**, **Facebook**
+- ⭐ **รีวิวสินค้า** (เฉพาะผู้ซื้อจริง + admin moderate) & ❤️ **Wishlist/รายการโปรด**
 - 💳 **จ่ายเงินแบบ Admin Confirm** — PromptPay QR หรือโอนธนาคาร → อัปโหลดสลิป →
   admin ตรวจสอบและยืนยัน
 - 📦 **ติดตามสถานะ realtime** — สถานะการจ่ายเงินและการจัดส่งอัปเดตสดถึงลูกค้า
@@ -19,9 +20,10 @@
 - 🗂️ **สต็อกสินค้า** — ตัดสต็อกอัตโนมัติเมื่อยืนยันการชำระเงิน, กัน oversell
 - 🛠️ **Admin / CMS** — จัดการสินค้า, เนื้อหา, แบนเนอร์, อีเมลเทมเพลต, ผู้ใช้ ได้เอง
 - ⚙️ **Global Settings** — ตั้งค่าทั้งระบบจากหลังบ้าน เช่น แสดง/ซ่อนสต็อก, ธีม, ค่าจัดส่ง
-- 🌗 **Light / Dark mode** + ♿ **a11y** (WCAG 2.1 AA) + 💀 **skeleton loading**
+- 🌗 **Light / Dark mode** + ♿ **a11y** (WCAG 2.1 AA) + 💀 **skeleton loading** + 📲 **PWA**
 - 🔎 **SEO** — auto `sitemap.xml`, robots, JSON-LD, OpenGraph
-- 📈 **Tracking / Ads** — GA4, Google Tag Manager, Meta Pixel
+- 📈 **Tracking / Ads** — GA4, Google Tag Manager, Meta Pixel (โหลดตาม consent)
+- 🔐 **PDPA / Privacy** — cookie consent, บันทึกความยินยอม, สิทธิเจ้าของข้อมูล, data retention
 - 🚀 **Platform** — cache system, image optimization, ระบบย่อลิงก์, email templates
 
 ## 🧱 Tech stack (สรุป)
@@ -103,3 +105,4 @@ docs/           เอกสารวางแผน/ออกแบบ
 - เงินเก็บเป็น integer **satang** (1 บาท = 100 สตางค์) ไม่ใช้ float
 - การเปลี่ยนสถานะ order/payment/shipment ต้องผ่าน state machine ที่กำหนดใน `SPEC.md`
 - พฤติกรรมที่ admin ควรปรับได้ ต้องอ่านจาก `GlobalSetting` ไม่ hard-code
+- ตัดสต็อกแบบ atomic กัน oversell; tracking โหลดเฉพาะเมื่อมี consent (PDPA)

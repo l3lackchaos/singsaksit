@@ -128,3 +128,11 @@ pnpm test:e2e                # Playwright end-to-end
   categories, and published CMS pages. Don't maintain a static URL list.
 - Discounts go through the **Coupon** system (percent / fixed / free-shipping)
   with per-user and total usage limits, recorded in `CouponRedemption`.
+- **Stock decrements must be atomic** (transaction / `WHERE stock > 0`) so two slips
+  for the last unit can't oversell; the second confirmation is refused, not driven
+  negative. Unpaid orders auto-cancel after `payment.expiryHours`.
+- **PDPA is a hard requirement.** Tracking (GA4/GTM/Pixel) loads only after cookie
+  consent; consent is recorded in `ConsentLog`. Slips live in a private bucket served
+  via short-lived signed URLs and are purged per `privacy.dataRetentionDays`.
+- **Sanitize admin/CMS rich text** (DOMPurify/sanitize-html) before storing and rendering.
+- Product **reviews** require a real purchase and admin moderation before they show.

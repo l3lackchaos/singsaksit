@@ -25,8 +25,10 @@
 
 ## โมดูล (Modules — in scope)
 
-- **Storefront**: หน้าแรก + hero, แคตตาล็อก, หน้าสินค้า, ค้นหา/กรอง, ตะกร้า, checkout
-- **Membership/Auth**: สมัคร/เข้าสู่ระบบ (email + Google + Facebook), โปรไฟล์, ที่อยู่จัดส่ง
+- **Storefront**: หน้าแรก + hero, แคตตาล็อก, หน้าสินค้า, ค้นหา (full-text ไทย)/กรอง, ตะกร้า, checkout
+- **Membership/Auth**: สมัคร/เข้าสู่ระบบ (email + Google + Facebook) + ยืนยันอีเมล,
+  โปรไฟล์, ที่อยู่จัดส่ง, **wishlist/รายการโปรด**
+- **Reviews**: ลูกค้าที่ซื้อจริงให้คะแนน+รีวิวสินค้า, admin moderate ก่อนแสดง
 - **Orders**: สร้างออร์เดอร์, ประวัติ, รายละเอียด, ติดตามสถานะ realtime
 - **Payments (Admin Confirm)**: สร้าง PromptPay QR ตามยอด, อัปโหลดสลิป, คิวตรวจสอบของ admin,
   ยืนยัน/ปฏิเสธ
@@ -44,6 +46,9 @@
 - **A11y & Theming**: WCAG 2.1 AA, keyboard nav, light/dark/system theme (สลับได้),
   **skeleton loading** ทุกส่วนที่โหลดข้อมูล
 - **Auto sitemap**: `sitemap.xml` สร้างอัตโนมัติจากสินค้า/หมวด/หน้า CMS ใน DB
+- **Privacy / PDPA**: cookie consent, บันทึกความยินยอม, หน้านโยบาย, สิทธิเจ้าของข้อมูล,
+  data retention (ดู SPEC §10)
+- **PWA**: ติดตั้งลงหน้าจอ + แคช/ออฟไลน์เบื้องต้น (ดู SPEC §11)
 
 ## นอกขอบเขต (Out of scope — เฟสแรก)
 
@@ -53,6 +58,8 @@
 - ระบบประมูล (auction) และระบบผ่อนชำระ
 - Marketplace หลายผู้ขาย (multi-vendor) — เป็นร้านเดียว
 - การรับรองพระแท้/ใบเซอร์อัตโนมัติ (admin กรอกข้อมูลเอง)
+- LINE Login / แจ้งเตือนผ่าน LINE (ใช้ Google/Facebook + อีเมลก่อน)
+- แอป mobile native (PWA แทน)
 
 ## เกณฑ์ความสำเร็จ (Definition of done)
 

@@ -15,31 +15,36 @@
 - [ ] CI: lint + typecheck + test
 
 ## Phase 1 — Auth & Membership
-- [ ] Supabase Auth: email/password + Google + Facebook OAuth
+- [ ] Supabase Auth: email/password + Google + Facebook OAuth + **ยืนยันอีเมล**
 - [ ] Trigger สร้าง `profiles` หลัง sign-up, role default = CUSTOMER
-- [ ] หน้า sign-in/sign-up/reset, โปรไฟล์, จัดการที่อยู่จัดส่ง
+- [ ] หน้า sign-in/sign-up/reset, โปรไฟล์, จัดการที่อยู่จัดส่ง (ตำบล/อำเภอ/จังหวัด)
+- [ ] **Wishlist/รายการโปรด** + ปุ่มหัวใจบนการ์ดสินค้า
 - [ ] RBAC middleware + RLS policies (เจ้าของข้อมูลเท่านั้น / admin)
+- [ ] Rate limit login/reset (Upstash)
 
 ## Phase 2 — Catalog & Storefront
 - [ ] Prisma model: Category, Product (slug + stock), ProductImage
 - [ ] auto-slug จาก title (กัน duplicate) + แก้เองได้, route `/product/:slug`
 - [ ] แสดง stock / ป้ายเหลือน้อย / ซ่อนสินค้าหมด — ควบคุมด้วย GlobalSetting
 - [ ] หน้าแรก + hero, หน้าแคตตาล็อก, หน้าสินค้า (RSC + SEO metadata) + skeleton
-- [ ] ค้นหา/กรอง/เรียงลำดับ
+- [ ] ค้นหา (Postgres full-text ไทย)/กรอง/เรียงลำดับ
 - [ ] อัปโหลด+optimize รูปสินค้า (Supabase Storage + next/image)
 - [ ] Cache catalog ด้วย cache tags + Redis
+- [ ] **Reviews**: ให้คะแนน/รีวิว (เฉพาะผู้ซื้อ) + แสดงคะแนนเฉลี่ย + AggregateRating
 
 ## Phase 3 — Cart, Checkout & Orders
 - [ ] Cart/CartItem, หน้า cart, checkout
 - [ ] สร้าง Order + OrderItem (snapshot ราคา), order history/detail
 - [ ] **Coupon/ส่วนลด** (PERCENT/FIXED/FREE_SHIPPING) + จำกัดสิทธิ์ + redemption, ค่าจัดส่ง
-- [ ] State machine ของ Order (ดู SPEC §2)
+- [ ] State machine ของ Order (ดู SPEC §2) + ตัดสต็อก atomic กัน oversell
+- [ ] Scheduled job: auto-cancel ออร์เดอร์ที่เลย `payment.expiryHours`
 
 ## Phase 4 — Payments (Admin Confirm) ★ หัวใจ
 - [ ] สร้าง PromptPay QR ตามยอด + แสดงเลขบัญชีธนาคาร
 - [ ] อัปโหลดสลิป → Payment `PENDING_REVIEW`
 - [ ] คิวตรวจสลิปของ admin: ยืนยัน/ปฏิเสธ + เหตุผล
 - [ ] ยืนยัน → ตัดสต็อก + Order `PAID` + AuditLog
+- [ ] คืนเงิน (refund) manual → `REFUNDED` + คืนสต็อก + AuditLog
 - [ ] อีเมลแจ้งทุกสถานะการจ่ายเงิน
 
 ## Phase 5 — Shipping & Realtime
@@ -54,16 +59,20 @@
 - [ ] จัดการ EmailTemplate (แก้ subject/body/ตัวแปร)
 - [ ] จัดการ Coupon (สร้าง/แก้/ดูการใช้งาน)
 - [ ] หน้า **Global Settings** (แสดงสต็อก, ธีม, จ่ายเงิน, จัดส่ง, SEO, feature flags)
+- [ ] Moderation รีวิว (อนุมัติ/ปฏิเสธ)
 - [ ] จัดการผู้ใช้/role, ตั้งค่าร้าน
 
 ## Phase 7 — Marketing, SEO & Analytics
 - [ ] **auto sitemap.xml** (จากสินค้า/หมวด/หน้า CMS ใน DB) + robots.txt, JSON-LD
       (Product/Offer/Breadcrumb/Organization)
-- [ ] GTM + GA4 + Meta Pixel + e-commerce events (purchase ฯลฯ)
+- [ ] **PDPA**: cookie consent banner (gate GA/Pixel), ConsentLog, หน้านโยบาย, สิทธิเจ้าของข้อมูล
+- [ ] GTM + GA4 + Meta Pixel + e-commerce events (purchase ฯลฯ) — โหลดตาม consent
 - [ ] ระบบย่อลิงก์ `/s/:code` (Postgres canonical + Redis cache/counter) + สถิติคลิก
 - [ ] หน้าโปรโมชัน/แคมเปญ (ใช้ Coupon + short links)
 
-## Phase 8 — Hardening & Launch
+## Phase 8 — Hardening, PWA & Launch
+- [ ] **PWA**: manifest + service worker (แคช catalog, ออฟไลน์ fallback, online-only checkout)
+- [ ] **Error monitoring** (Sentry) client/server + data retention job (ลบสลิปเกินกำหนด)
 - [ ] เทส e2e flow หลัก (checkout → จ่าย → ยืนยัน → ส่ง)
 - [ ] ตรวจ a11y (WCAG 2.1 AA) + Lighthouse ≥ 90
 - [ ] ตรวจ RLS/permission ครบ, rate limit จุดสำคัญ
@@ -72,4 +81,4 @@
 
 ## Cross-cutting (ทำควบทุกเฟส)
 - a11y + light/dark, validation (Zod), cache invalidation, AuditLog,
-  error/empty/loading states, mobile-responsive
+  error/empty/loading states, mobile-responsive, sanitize rich text (กัน XSS)

@@ -20,18 +20,21 @@ src/
     (account)/              # หน้าสมาชิก: ออร์เดอร์, โปรไฟล์
     admin/                  # หลังบ้าน/CMS (ป้องกันด้วย role)
     api/                    # route handlers (webhooks, short link redirect)
+    api/cron/               # scheduled jobs (auto-cancel, data retention) — กันด้วย CRON_SECRET
     s/[code]/               # short link redirect
   modules/                  # โดเมนแยกตามฟีเจอร์ (feature-based)
-    catalog/                # products, categories
+    catalog/                # products, categories, wishlist
+    reviews/                # ratings + moderation
     cart/
     orders/
-    payments/               # admin-confirm, slip review, promptpay qr
+    payments/               # admin-confirm, slip review, promptpay qr, refund
     shipping/
     auth/
     cms/                    # pages, banners
     email/                  # templates + sender
     marketing/              # coupons, short links, analytics
     settings/               # global settings (typed accessor)
+    privacy/                # consent log + PDPA helpers
     each module: { components/, actions.ts, service.ts, repository.ts, schema.ts (zod) }
   components/ui/            # shadcn/ui primitives ที่ใช้ร่วม
   lib/                      # supabase, prisma, redis, cache, seo, money, slug utils
@@ -75,3 +78,7 @@ docs/
 - ทุกพฤติกรรมที่ admin ควรปรับได้ อ่านจาก `GlobalSetting` ผ่าน typed accessor — ห้าม hard-code
 - ทุกส่วนที่โหลดข้อมูล ต้องมี `loading.tsx`/skeleton คู่กันเสมอ
 - `sitemap.ts` ดึงข้อมูลจาก repository เดียวกับ storefront (ไม่ query ซ้ำซ้อน)
+- rich text จาก admin/CMS ต้อง sanitize (กัน XSS) ก่อนเก็บและก่อน render เสมอ
+- การตัดสต็อกต้อง atomic (transaction / `WHERE stock > 0`) ห้ามอ่าน-แล้ว-เขียน
+- tracking script (GA/GTM/Pixel) โหลดเฉพาะเมื่อมี consent — ไม่ฝังตรงใน layout แบบไร้เงื่อนไข
+- scheduled job อยู่ใต้ `api/cron/*` และตรวจ `CRON_SECRET` ทุกครั้ง
