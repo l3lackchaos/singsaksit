@@ -12,6 +12,8 @@ export const SETTINGS_DEFAULTS = {
   'theme.brandColor': '#9a6a2f',
   'store.name': 'สิ่งศักดิ์สิทธิ์',
   'payment.expiryHours': 48,
+  'payment.promptpayId': '',
+  'payment.bankAccounts': [] as Array<{ bank: string; name: string; number: string }>,
   'shipping.fee': 5000, // satang
   'shipping.freeOver': 200000, // satang
   'feature.couponsEnabled': true,

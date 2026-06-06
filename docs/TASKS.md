@@ -38,35 +38,35 @@
 - [ ] Cache catalog ด้วย cache tags + Redis
 - [ ] **Reviews**: ให้คะแนน/รีวิว (เฉพาะผู้ซื้อ) + แสดงคะแนนเฉลี่ย + AggregateRating
 
-## Phase 3 — Cart, Checkout & Orders
-- [ ] Cart/CartItem, หน้า cart, checkout
-- [ ] สร้าง Order + OrderItem (snapshot ราคา), order history/detail
-- [ ] **Coupon/ส่วนลด** (PERCENT/FIXED/FREE_SHIPPING) + จำกัดสิทธิ์ + redemption, ค่าจัดส่ง
-- [ ] State machine ของ Order (ดู SPEC §2) + ตัดสต็อก atomic กัน oversell
+## Phase 3 — Cart, Checkout & Orders ✅🚧
+- [x] Cart (localStorage) + หน้า cart + checkout
+- [x] สร้าง Order + OrderItem (snapshot ราคา) ผ่าน RPC `create_order` (ราคาคิดฝั่ง DB)
+- [x] order history (/account/orders) + order detail
+- [x] **Coupon** engine (PERCENT/FIXED/FREE_SHIPPING) + ใช้ใน create_order; ค่าจัดส่ง/ส่งฟรี
+- [x] State machine + ตัดสต็อก atomic กัน oversell (ทดสอบจริงผ่าน)
+- [ ] บันทึก CouponRedemption + per-user limit
 - [ ] Scheduled job: auto-cancel ออร์เดอร์ที่เลย `payment.expiryHours`
 
-## Phase 4 — Payments (Admin Confirm) ★ หัวใจ
-- [ ] สร้าง PromptPay QR ตามยอด + แสดงเลขบัญชีธนาคาร
-- [ ] อัปโหลดสลิป → Payment `PENDING_REVIEW`
-- [ ] คิวตรวจสลิปของ admin: ยืนยัน/ปฏิเสธ + เหตุผล
-- [ ] ยืนยัน → ตัดสต็อก + Order `PAID` + AuditLog
-- [ ] คืนเงิน (refund) manual → `REFUNDED` + คืนสต็อก + AuditLog
-- [ ] อีเมลแจ้งทุกสถานะการจ่ายเงิน
+## Phase 4 — Payments (Admin Confirm) ★ หัวใจ ✅🚧
+- [x] สร้าง PromptPay QR ตามยอด + แสดงเลขบัญชีธนาคาร (จาก GlobalSetting)
+- [x] อัปโหลดสลิป (private bucket + signed URL) → Payment `PENDING_REVIEW`
+- [x] คิวตรวจสลิปของ admin (realtime): ยืนยัน/ปฏิเสธ + เหตุผล
+- [x] ยืนยัน → ตัดสต็อก atomic + Order `PAID` (RPC `confirm_payment`)
+- [ ] คืนเงิน (refund) manual → `REFUNDED` + คืนสต็อก
+- [ ] AuditLog + อีเมลแจ้งทุกสถานะการจ่ายเงิน
 
-## Phase 5 — Shipping & Realtime
-- [ ] Shipment + carrier/trackingNo, อัปเดตสถานะส่ง
-- [ ] Realtime: ลูกค้าเห็นสถานะ order/payment/shipment สด ๆ
-- [ ] Realtime: คิวตรวจสลิปฝั่ง admin อัปเดตสด
+## Phase 5 — Shipping & Realtime ✅
+- [x] Shipment + carrier/trackingNo (RPC `ship_order`), อัปเดตสถานะส่ง
+- [x] Realtime: ลูกค้าเห็นสถานะ order/payment/shipment สด ๆ (Supabase Realtime)
+- [x] Realtime: คิวตรวจสลิปฝั่ง admin อัปเดตสด
 
-## Phase 6 — Admin / CMS
-- [ ] Admin dashboard (ยอดขาย, ออร์เดอร์, คิวงาน)
-- [ ] จัดการสินค้า/หมวดหมู่/สต็อก
+## Phase 6 — Admin / CMS 🚧
+- [x] Admin layout (RBAC) + dashboard (คิวรอตรวจ/ออร์เดอร์/สินค้า/สมาชิก)
+- [x] จัดการสินค้า: list + create/edit (auto-slug, ราคา/สต็อก/สถานะ)
+- [x] คิวตรวจสลิป + ยืนยัน/ปฏิเสธ + จัดส่ง (ship)
+- [x] หน้า **Global Settings** (ชื่อร้าน, แสดงสต็อก, ธีม, PromptPay, ค่าส่ง, feature flags)
 - [ ] CMS: หน้า, แบนเนอร์, เนื้อหา hero
-- [ ] จัดการ EmailTemplate (แก้ subject/body/ตัวแปร)
-- [ ] จัดการ Coupon (สร้าง/แก้/ดูการใช้งาน)
-- [ ] หน้า **Global Settings** (แสดงสต็อก, ธีม, จ่ายเงิน, จัดส่ง, SEO, feature flags)
-- [ ] Moderation รีวิว (อนุมัติ/ปฏิเสธ)
-- [ ] จัดการผู้ใช้/role, ตั้งค่าร้าน
+- [ ] จัดการ EmailTemplate / Coupon / Moderation รีวิว / จัดการ role
 
 ## Phase 7 — Marketing, SEO & Analytics
 - [x] **auto sitemap.xml** (จากสินค้าใน DB) + robots.txt (noindex หน้า private) + JSON-LD Product/Offer
