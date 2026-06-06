@@ -20,7 +20,7 @@ redemption limits, CMS pages/banners, email-template editor, reviews, short
 links, users/roles, settings), AuditLog, transactional email (Resend, no-op
 without key), SEO (auto sitemap/robots/JSON-LD incl. Organization + Breadcrumb +
 AggregateRating), PDPA consent + gated analytics + data-retention cron, and PWA.
-Remaining tail (Upstash cache/rate-limit, Sentry, full purchase-path e2e with a
+Remaining tail (Sentry error monitoring, full purchase-path e2e with a
 seeded admin) is tracked in `docs/TASKS.md`; done-criteria in `docs/GOALS.md`.
 
 > **Setup to go live:** configure OAuth providers (Google/Facebook) + Resend +

@@ -35,7 +35,7 @@
 - [x] ค้นหา (trgm) + กรองหมวด + เรียงราคา/ใหม่ล่าสุด
 - [x] auto-slug จาก title ตอนสร้างใน admin (กัน duplicate)
 - [x] อัปโหลด+optimize รูปสินค้า (Supabase Storage + next/image)
-- [ ] Cache catalog ด้วย cache tags + Redis (รอ Upstash)
+- [x] Cache catalog ด้วย Next.js cache tags (+ Redis layer เมื่อมี Upstash)
 - [x] **Reviews**: ให้คะแนน/รีวิว (เฉพาะผู้ซื้อ, RPC) + คะแนนเฉลี่ย + AggregateRating + moderation
 
 ## Phase 3 — Cart, Checkout & Orders ✅🚧
@@ -80,8 +80,8 @@
 ## Phase 8 — Hardening, PWA & Launch 🚧
 - [x] **PWA**: manifest + service worker (SWR แคช หน้า public, online-only สำหรับ checkout/admin/auth)
 - [x] data retention job ลบสลิปเกินกำหนด (pg_cron `purge_expired_slips`)
+- [x] Rate limit (Upstash + in-memory fallback) ที่ order/slip/review/sign-in
 - [ ] **Error monitoring** (Sentry) — รอ DSN
-- [ ] Rate limit / Redis cache (Upstash) — รอ creds
 - [x] เทส e2e smoke (home, catalog, product, auth guard, robots/sitemap)
 - [ ] เทส e2e flow เต็ม (checkout → จ่าย → ยืนยัน → ส่ง) ด้วยผู้ใช้จริง
 - [ ] ตรวจ a11y (WCAG 2.1 AA) + Lighthouse ≥ 90
