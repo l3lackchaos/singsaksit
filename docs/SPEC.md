@@ -33,7 +33,9 @@ data model, state machine, และ flow สำคัญ
   คุมพฤติกรรมทั้งระบบ — ดู §6)
 - **CmsPage / Banner** — slug/title/body (rich), published, sortOrder (admin จัดการ)
 - **EmailTemplate** — key, subject, body (React Email / MJML-like), variables, updatedAt
-- **ShortLink** — code, targetUrl, clicks, createdBy, createdAt
+- **ShortLink** — code (unique), targetUrl, clicks, createdBy, createdAt
+  - แหล่งข้อมูลหลัก (canonical) อยู่ที่ Postgres; Redis ใช้เป็น cache การ resolve +
+    ตัวนับคลิก (เขียนกลับ Postgres เป็นช่วง) ดู §4
 - **AuditLog** — actorId, action, entity, entityId, meta, createdAt (สำหรับงาน admin สำคัญ)
 
 > เงินเก็บเป็น integer **satang** เสมอ (1 บาท = 100 สตางค์)
@@ -63,14 +65,16 @@ data model, state machine, และ flow สำคัญ
 ### Checkout → Payment → Confirm
 1. ลูกค้า checkout → สร้าง `Order` (`PENDING_PAYMENT`) + `Payment` (`PENDING`)
 2. เลือกวิธีจ่าย:
-   - **PromptPay**: ระบบสร้าง QR จาก `PROMPTPAY_ID` + ยอด `total` (promptpay-qr)
-   - **Bank transfer**: แสดงเลขบัญชีร้าน
+   - **PromptPay**: ระบบสร้าง QR จาก `payment.promptpayId` (GlobalSetting) + ยอด `total`
+     (promptpay-qr) — env `PROMPTPAY_ID` ใช้เป็นค่า seed/fallback เท่านั้น
+   - **Bank transfer**: แสดงเลขบัญชีร้านจาก `payment.bankAccounts` (GlobalSetting)
 3. ลูกค้าโอน แล้วอัปโหลดสลิป → `Payment.status = PENDING_REVIEW`,
    `Order.status = AWAITING_CONFIRMATION` → ส่งอีเมล "ได้รับแจ้งชำระเงิน"
 4. Admin เปิดคิวตรวจสลิป → ยืนยัน/ปฏิเสธ
    - ยืนยัน: ตัดสต็อก, `Payment=PAID`, `Order=PAID`, อีเมลยืนยัน, broadcast realtime
    - ปฏิเสธ: `Payment=REJECTED` + เหตุผล, อีเมลแจ้งลูกค้า
-5. Admin/staff จัดส่ง → กรอก carrier + trackingNo → `Shipment=SHIPPED`, `Order=SHIPPED`
+5. หลังยืนยัน admin/staff เตรียมของ (`Order=PROCESSING`, `Shipment=PREPARING`) →
+   จัดส่งจริง กรอก carrier + trackingNo → `Shipment=SHIPPED`, `Order=SHIPPED`
 6. ลูกค้าเห็นทุกสถานะแบบ realtime ในหน้า order detail
 
 ### Auth
@@ -92,7 +96,8 @@ data model, state machine, และ flow สำคัญ
   `view_item`, `add_to_cart`, `begin_checkout`, `purchase`
 - **Email templates**: เก็บใน `EmailTemplate` (admin แก้ได้), render ด้วย React Email,
   ส่งผ่าน Resend; ตัวแปร เช่น `{{orderNo}}`, `{{total}}`, `{{trackingNo}}`
-- **Short links**: `/s/:code` → 302 ไป targetUrl, นับ `clicks`; admin สร้าง/ดูสถิติได้
+- **Short links**: `/s/:code` → 302 ไป targetUrl; resolve ผ่าน Redis cache (canonical
+  ใน Postgres `ShortLink`), นับ `clicks` ใน Redis แล้ว flush กลับ Postgres; admin สร้าง/ดูสถิติได้
 - **A11y**: WCAG 2.1 AA — keyboard navigable, focus visible, ARIA ถูกต้อง,
   contrast ผ่านทั้ง light/dark, รองรับ reduced-motion
 - **Validation**: ทุก input ตรวจด้วย Zod ทั้ง client และ server

@@ -60,8 +60,8 @@
 - [ ] **auto sitemap.xml** (จากสินค้า/หมวด/หน้า CMS ใน DB) + robots.txt, JSON-LD
       (Product/Offer/Breadcrumb/Organization)
 - [ ] GTM + GA4 + Meta Pixel + e-commerce events (purchase ฯลฯ)
-- [ ] ระบบย่อลิงก์ `/s/:code` + สถิติคลิก
-- [ ] โปรโมชัน/คูปอง หน้า marketing
+- [ ] ระบบย่อลิงก์ `/s/:code` (Postgres canonical + Redis cache/counter) + สถิติคลิก
+- [ ] หน้าโปรโมชัน/แคมเปญ (ใช้ Voucher + short links)
 
 ## Phase 8 — Hardening & Launch
 - [ ] เทส e2e flow หลัก (checkout → จ่าย → ยืนยัน → ส่ง)

@@ -30,10 +30,11 @@ src/
     auth/
     cms/                    # pages, banners
     email/                  # templates + sender
-    marketing/              # coupons, short links, analytics
+    marketing/              # vouchers, short links, analytics
+    settings/               # global settings (typed accessor)
     each module: { components/, actions.ts, service.ts, repository.ts, schema.ts (zod) }
   components/ui/            # shadcn/ui primitives ที่ใช้ร่วม
-  lib/                      # supabase, prisma, redis, cache, seo, money utils
+  lib/                      # supabase, prisma, redis, cache, seo, money, slug utils
   styles/
 prisma/
   schema.prisma

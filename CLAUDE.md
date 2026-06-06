@@ -46,7 +46,8 @@ See `docs/TECH-STACK.md` for the full rationale. In short:
 - **Supabase** — Postgres, Auth (email/password + Google + Facebook OAuth),
   Realtime, Storage (slips + product images), Row Level Security.
 - **Prisma** — typed schema + migrations over the Supabase Postgres.
-- **Upstash Redis** — caching + the link-shortener keyspace.
+- **Upstash Redis** — caching + short-link resolve cache & click counter
+  (canonical short-link rows live in Postgres).
 - **Resend + React Email** — transactional emails from admin-editable templates.
 - **Zod + React Hook Form + TanStack Query** — validation, forms, client data.
 - **GA4 + Google Tag Manager + Meta Pixel** — tracking/Ads.
