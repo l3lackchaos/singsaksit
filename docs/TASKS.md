@@ -83,7 +83,8 @@
 - [x] Rate limit (Upstash + in-memory fallback) ที่ order/slip/review/sign-in
 - [ ] **Error monitoring** (Sentry) — รอ DSN
 - [x] เทส e2e smoke (home, catalog, product, auth guard, robots/sitemap)
-- [ ] เทส e2e flow เต็ม (checkout → จ่าย → ยืนยัน → ส่ง) ด้วยผู้ใช้จริง
+- [x] เทส e2e flow เต็ม (sign in → cart → checkout → upload slip → admin confirm → PAID)
+- [x] Sentry error monitoring (DSN-gated)
 - [ ] ตรวจ a11y (WCAG 2.1 AA) + Lighthouse ≥ 90
 - [ ] ตรวจ RLS/permission ครบ, rate limit จุดสำคัญ
 - [ ] ตั้งค่า production (Vercel + Supabase), โดเมน, monitoring

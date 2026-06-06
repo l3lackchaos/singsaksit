@@ -19,9 +19,11 @@ atomic oversell-safe stock), shipping + realtime, product image upload, admin
 redemption limits, CMS pages/banners, email-template editor, reviews, short
 links, users/roles, settings), AuditLog, transactional email (Resend, no-op
 without key), SEO (auto sitemap/robots/JSON-LD incl. Organization + Breadcrumb +
-AggregateRating), PDPA consent + gated analytics + data-retention cron, and PWA.
-Remaining tail (Sentry error monitoring, full purchase-path e2e with a
-seeded admin) is tracked in `docs/TASKS.md`; done-criteria in `docs/GOALS.md`.
+AggregateRating), PDPA consent + gated analytics + data-retention cron, PWA,
+Next.js cache-tag caching, Upstash-or-fallback rate limiting, and Sentry
+(DSN-gated). Verified by the full gate plus an 8-test Playwright suite incl. a
+full purchase-path e2e (sign in → cart → checkout → slip upload → admin confirm →
+PAID). What's left is operational config only — see below.
 
 > **Setup to go live:** configure OAuth providers (Google/Facebook) + Resend +
 > analytics IDs in the dashboard/env, and promote one user to `ADMIN`.
