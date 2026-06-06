@@ -3,15 +3,17 @@
 ลำดับงานสำหรับสร้างเว็บไซต์ขายพระเครื่องให้ครบตาม `SCOPE.md` แต่ละเฟสควรจบแบบ
 ใช้งานได้จริง (shippable) ทำเครื่องหมาย `[x]` เมื่อเสร็จ
 
-## Phase 0 — Foundation
-- [ ] Scaffold Next.js (App Router) + TypeScript + pnpm
-- [ ] ตั้งค่า Tailwind + shadcn/ui + next-themes (light/dark/system)
-- [ ] ตั้งค่า ESLint/Prettier, Vitest, Playwright, `.env.example`
-- [ ] เชื่อม Supabase (project, client, service role) + Prisma + migration แรก
-- [ ] Layout หลัก + design tokens + a11y baseline (skip link, focus styles)
-- [ ] **Theme switcher** (light/dark/system) ไม่มี flash on load
-- [ ] **Skeleton components** + แบบแผน `loading.tsx` (Suspense) ใช้ทั่วทั้งแอป
-- [ ] **GlobalSetting** model + typed accessor + cache/revalidate
+## Phase 0 — Foundation ✅
+- [x] Scaffold Next.js (App Router) + TypeScript + pnpm
+- [x] ตั้งค่า Tailwind + shadcn-style UI + next-themes (light/dark/system)
+- [x] ตั้งค่า ESLint/Prettier, Vitest, `.env.example`
+- [x] Prisma schema เต็ม (data model ตาม SPEC §1) + generate client
+- [x] Layout หลัก + design tokens + a11y baseline (skip link, focus styles)
+- [x] **Theme switcher** (light/dark/system) ไม่มี flash on load
+- [x] **Skeleton components** + แบบแผน `loading.tsx` (Suspense)
+- [x] **GlobalSetting** typed accessor + unit test
+- [ ] เชื่อม Supabase จริง (project, client, service role) + รัน migration แรก — รอ backend
+- [ ] Playwright e2e setup
 - [ ] CI: lint + typecheck + test
 
 ## Phase 1 — Auth & Membership

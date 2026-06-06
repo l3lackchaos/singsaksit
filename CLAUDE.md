@@ -4,11 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-**Greenfield.** As of this writing the repository contains only planning
-documents under `docs/` — no application code has been scaffolded yet. The
-sections below describe the *intended* architecture so that the first build-out
-follows a coherent plan. When you scaffold the app, update the "Commands"
-section with the real, verified commands.
+**Phase 0 scaffolded.** The Next.js app is set up and the full verification gate
+passes (`pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`). The data model
+lives in `prisma/schema.prisma`; theme switching, design tokens, the Global
+Settings accessor, and skeleton loading are in place. Remaining phases (auth,
+catalog, cart/checkout, payments, shipping/realtime, admin/CMS, marketing/SEO,
+PWA/hardening) are tracked in `docs/TASKS.md` with done-criteria in `docs/GOALS.md`.
 
 > Read the planning docs before writing code. They are the source of truth for
 > scope and decisions:
@@ -52,10 +53,10 @@ See `docs/TECH-STACK.md` for the full rationale. In short:
 - **Zod + React Hook Form + TanStack Query** — validation, forms, client data.
 - **GA4 + Google Tag Manager + Meta Pixel** — tracking/Ads.
 
-## Commands (planned)
+## Commands
 
-These are the expected commands once the Next.js app is scaffolded. Verify and
-correct them after scaffolding, then remove this note.
+Verified working with pnpm 10 + Node 22. DB commands need a `DATABASE_URL`
+(Supabase Postgres) in `.env` — see `.env.example`.
 
 ```bash
 # Install
