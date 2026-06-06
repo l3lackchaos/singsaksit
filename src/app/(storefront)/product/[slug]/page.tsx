@@ -8,7 +8,7 @@ import { getSetting } from '@/lib/settings';
 import { StockBadge } from '@/modules/catalog/components/product-card';
 import { WishlistButton } from '@/modules/wishlist/components/wishlist-button';
 import { isInWishlist } from '@/modules/wishlist/repository';
-import { Button } from '@/components/ui/button';
+import { AddToCartButton } from '@/modules/cart/components/add-to-cart-button';
 import { formatThb, satangToBaht } from '@/lib/money';
 import { env } from '@/lib/env';
 
@@ -126,9 +126,16 @@ export default async function ProductPage({
           )}
 
           <div className="mt-6 flex gap-3">
-            <Button size="lg" disabled={soldOut} className="flex-1">
-              {soldOut ? 'สินค้าหมด' : 'เพิ่มลงตะกร้า'}
-            </Button>
+            <AddToCartButton
+              product={{
+                productId: product.id,
+                slug: product.slug,
+                title: product.title,
+                price: product.price,
+                maxStock: product.stock,
+              }}
+              soldOut={soldOut}
+            />
             <WishlistButton productId={product.id} initialSaved={saved} />
           </div>
           <p className="mt-3 text-xs text-muted-foreground">

@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { Search, ShoppingCart, User } from 'lucide-react';
+import { Search, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { CartNavButton } from '@/components/cart-nav-button';
 import { getSetting } from '@/lib/settings';
 
 export function SiteHeader() {
@@ -29,11 +30,7 @@ export function SiteHeader() {
               <Search className="h-5 w-5" />
             </Link>
           </Button>
-          <Button variant="ghost" size="icon" aria-label="ตะกร้าสินค้า" asChild>
-            <Link href="/cart">
-              <ShoppingCart className="h-5 w-5" />
-            </Link>
-          </Button>
+          <CartNavButton />
           <Button variant="ghost" size="icon" aria-label="บัญชีของฉัน" asChild>
             <Link href="/account">
               <User className="h-5 w-5" />
