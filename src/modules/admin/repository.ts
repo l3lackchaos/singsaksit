@@ -142,6 +142,32 @@ export async function getCmsPage(id: string): Promise<CmsPageRow | null> {
   return (data as CmsPageRow | null) ?? null;
 }
 
+export interface EmailTemplateRow {
+  id: string;
+  key: string;
+  subject: string;
+  body: string;
+}
+
+export async function listEmailTemplates(): Promise<EmailTemplateRow[]> {
+  const sb = await createSupabaseServerClient();
+  const { data } = await sb
+    .from('EmailTemplate')
+    .select('id,key,subject,body')
+    .order('key', { ascending: true });
+  return (data ?? []) as EmailTemplateRow[];
+}
+
+export async function getEmailTemplateById(id: string): Promise<EmailTemplateRow | null> {
+  const sb = await createSupabaseServerClient();
+  const { data } = await sb
+    .from('EmailTemplate')
+    .select('id,key,subject,body')
+    .eq('id', id)
+    .maybeSingle();
+  return (data as EmailTemplateRow | null) ?? null;
+}
+
 export interface UserRow {
   id: string;
   email: string;

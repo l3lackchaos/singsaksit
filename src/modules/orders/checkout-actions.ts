@@ -3,6 +3,8 @@
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { sendTemplate } from '@/lib/email';
+import { formatThb } from '@/lib/money';
 
 const addressSchema = z.object({
   recipient: z.string().min(1).max(120),
@@ -54,8 +56,18 @@ export async function createOrderAction(
   }
 
   const row = Array.isArray(data) ? data[0] : data;
-  const orderId = (row as { order_id: string } | null)?.order_id;
+  const orderId = (row as { order_id: string; order_no: string } | null)?.order_id;
+  const orderNo = (row as { order_no: string } | null)?.order_no ?? '';
   if (!orderId) return { error: 'สร้างคำสั่งซื้อไม่สำเร็จ' };
+
+  if (user.email) {
+    const { data: ord } = await sb.from('Order').select('total').eq('id', orderId).maybeSingle();
+    const total = (ord as { total: number } | null)?.total ?? 0;
+    await sendTemplate(user.email, 'order_received', {
+      orderNo,
+      total: formatThb(total),
+    });
+  }
 
   revalidatePath('/account/orders');
   return { orderId };

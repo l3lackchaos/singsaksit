@@ -12,6 +12,7 @@ import {
   GalleryHorizontalEnd,
   Ticket,
   Users,
+  Mail,
 } from 'lucide-react';
 import { requireAdmin } from '@/lib/auth';
 
@@ -26,6 +27,7 @@ const NAV = [
   { href: '/admin/coupons', label: 'คูปอง', icon: Ticket },
   { href: '/admin/pages', label: 'หน้าเนื้อหา', icon: FileText },
   { href: '/admin/banners', label: 'แบนเนอร์', icon: GalleryHorizontalEnd },
+  { href: '/admin/emails', label: 'อีเมล', icon: Mail },
   { href: '/admin/links', label: 'ย่อลิงก์', icon: Link2 },
   { href: '/admin/users', label: 'ผู้ใช้', icon: Users },
   { href: '/admin/settings', label: 'ตั้งค่า', icon: Settings },

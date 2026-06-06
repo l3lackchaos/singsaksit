@@ -8,6 +8,24 @@ import { bahtToSatang } from '@/lib/money';
 import { slugify } from '@/modules/catalog/slug';
 import { sanitizeRichText } from '@/lib/sanitize';
 import { logAudit } from './audit';
+import { sendTemplate } from '@/lib/email';
+
+async function orderRecipient(
+  sb: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  orderId: string,
+): Promise<{ orderNo: string; email: string | null }> {
+  const { data } = await sb
+    .from('Order')
+    .select('orderNo,Profile(email)')
+    .eq('id', orderId)
+    .maybeSingle();
+  const row = data as { orderNo: string; Profile: unknown } | null;
+  const profile = Array.isArray(row?.Profile) ? row?.Profile[0] : row?.Profile;
+  return {
+    orderNo: row?.orderNo ?? '',
+    email: (profile as { email?: string } | undefined)?.email ?? null,
+  };
+}
 
 export interface ActionResult {
   error?: string;
@@ -21,6 +39,8 @@ export async function confirmPaymentAction(orderId: string): Promise<ActionResul
   revalidatePath('/admin/payments');
   revalidatePath('/admin/orders');
   if (error) return { error: error.message };
+  const rcpt = await orderRecipient(sb, orderId);
+  if (rcpt.email) await sendTemplate(rcpt.email, 'payment_confirmed', { orderNo: rcpt.orderNo });
   return { success: 'ยืนยันการชำระเงินแล้ว' };
 }
 
@@ -73,6 +93,13 @@ export async function shipOrderAction(
   });
   revalidatePath(`/admin/orders/${parsed.data.orderId}`);
   if (error) return { error: error.message };
+  const rcpt = await orderRecipient(sb, parsed.data.orderId);
+  if (rcpt.email)
+    await sendTemplate(rcpt.email, 'order_shipped', {
+      orderNo: rcpt.orderNo,
+      carrier: parsed.data.carrier,
+      trackingNo: parsed.data.tracking,
+    });
   return { success: 'บันทึกการจัดส่งแล้ว' };
 }
 
@@ -333,6 +360,34 @@ export async function deleteProductImageAction(
   await sb.storage.from('products').remove([path]);
   revalidatePath(`/admin/products/${productId}`);
   revalidatePath('/products');
+}
+
+export async function updateEmailTemplateAction(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireAdmin();
+  const schema = z.object({
+    id: z.string().min(1),
+    subject: z.string().min(1, 'กรุณากรอกหัวข้อ').max(300),
+    body: z.string().min(1, 'กรุณากรอกเนื้อหา').max(20000),
+  });
+  const parsed = schema.safeParse({
+    id: formData.get('id'),
+    subject: formData.get('subject'),
+    body: formData.get('body'),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'ข้อมูลไม่ถูกต้อง' };
+
+  const sb = await createSupabaseServerClient();
+  const { error } = await sb
+    .from('EmailTemplate')
+    .update({ subject: parsed.data.subject, body: parsed.data.body, updatedAt: new Date().toISOString() })
+    .eq('id', parsed.data.id);
+  if (error) return { error: error.message };
+  await logAudit('update_email_template', 'EmailTemplate', parsed.data.id);
+  revalidatePath('/admin/emails');
+  return { success: 'บันทึกเทมเพลตแล้ว' };
 }
 
 export async function updateSettingsAction(
