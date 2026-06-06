@@ -29,7 +29,7 @@ export default function CartPage() {
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_320px]">
         <ul className="divide-y rounded-lg border">
           {items.map((item) => (
-            <li key={item.productId} className="flex items-center gap-4 p-4">
+            <li key={item.productId} className="flex flex-wrap items-center gap-4 p-4">
               <div
                 className="h-16 w-16 shrink-0 rounded-md bg-gradient-to-br from-secondary to-muted"
                 aria-hidden="true"
@@ -43,39 +43,42 @@ export default function CartPage() {
                 </Link>
                 <p className="text-sm text-muted-foreground">{formatThb(item.price)}</p>
               </div>
-              <div className="flex items-center gap-1">
+              {/* Controls cluster: wraps to its own line on narrow screens. */}
+              <div className="ml-auto flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9"
+                    aria-label="ลดจำนวน"
+                    onClick={() => setQty(item.productId, item.qty - 1)}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="w-8 text-center tabular-nums">{item.qty}</span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9"
+                    aria-label="เพิ่มจำนวน"
+                    disabled={item.qty >= item.maxStock}
+                    onClick={() => setQty(item.productId, item.qty + 1)}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="w-24 text-right font-semibold tabular-nums">
+                  {formatThb(item.price * item.qty)}
+                </div>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
-                  className="h-8 w-8"
-                  aria-label="ลดจำนวน"
-                  onClick={() => setQty(item.productId, item.qty - 1)}
+                  aria-label="ลบออกจากตะกร้า"
+                  onClick={() => remove(item.productId)}
                 >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="w-8 text-center tabular-nums">{item.qty}</span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  aria-label="เพิ่มจำนวน"
-                  disabled={item.qty >= item.maxStock}
-                  onClick={() => setQty(item.productId, item.qty + 1)}
-                >
-                  <Plus className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="w-28 text-right font-semibold tabular-nums">
-                {formatThb(item.price * item.qty)}
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="ลบออกจากตะกร้า"
-                onClick={() => remove(item.productId)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
             </li>
           ))}
         </ul>
