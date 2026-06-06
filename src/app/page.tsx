@@ -50,9 +50,9 @@ export default async function HomePage() {
           <span className="rounded-full border bg-background/60 px-4 py-1 text-sm text-muted-foreground">
             พระแท้ ตรวจสอบได้ ชำระเงินปลอดภัย
           </span>
-          <h1 className="max-w-2xl text-4xl font-bold tracking-tight md:text-5xl">
+          <h1 className="text-hero max-w-3xl font-bold">
             {storeName}
-            <span className="block text-primary">ศูนย์รวมพระเครื่องมงคล</span>
+            <span className="mt-1 block text-primary">ศูนย์รวมพระเครื่องมงคล</span>
           </h1>
           <p className="max-w-xl text-balance text-muted-foreground">
             คัดสรรพระเครื่องคุณภาพ พร้อมระบบยืนยันการชำระเงินโดยแอดมิน

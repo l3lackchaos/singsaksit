@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --font-sans: 'IBM Plex Sans Thai', 'Noto Sans Thai', system-ui, -apple-system,
-    'Segoe UI', Roboto, sans-serif;
+  /* --font-sans / --font-display are provided by next/font (see app/layout.tsx);
+     these are the fallbacks before the webfonts load. */
+  --font-fallback: 'Sarabun', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display-fallback: 'Trirong', Georgia, 'Times New Roman', serif;
 
   --background: 40 30% 98%;
   --foreground: 30 10% 12%;
@@ -64,6 +66,35 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-sans);
+    font-family: var(--font-sans), var(--font-fallback);
+    line-height: 1.6;
+    font-kerning: normal;
+    -webkit-font-smoothing: antialiased;
   }
+  /* Display serif (Trirong) carries the "sacred / premium" voice on headings. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), var(--font-display-fallback);
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* Fluid hero display size — brand register (clamp, ~2.75rem → 4.5rem). */
+.text-hero {
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+/* Comfortable measure for long-form prose. */
+.measure {
+  max-width: 68ch;
 }

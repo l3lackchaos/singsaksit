@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Sarabun, Trirong } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/components/providers';
 import { Analytics } from '@/components/analytics';
@@ -6,6 +7,20 @@ import { ServiceWorkerRegister } from '@/components/sw-register';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { getSetting } from '@/lib/settings';
+
+const sarabun = Sarabun({
+  subsets: ['thai', 'latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const trirong = Trirong({
+  subsets: ['thai', 'latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-display',
+  display: 'swap',
+});
 
 const storeName = getSetting('store.name');
 
@@ -27,7 +42,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="th" suppressHydrationWarning>
+    <html
+      lang="th"
+      suppressHydrationWarning
+      className={`${sarabun.variable} ${trirong.variable}`}
+    >
       <body className="min-h-screen antialiased">
         <Providers>
           <a
