@@ -19,24 +19,43 @@ interface ProductRow {
 const LIST_COLUMNS = 'id,slug,title,price,stock,lowStockThreshold,status';
 const LIST_SELECT = `${LIST_COLUMNS},ProductImage(storagePath,sortOrder)`;
 
+export type ProductSort = 'new' | 'price_asc' | 'price_desc';
+
 export async function listActiveProducts(options?: {
   search?: string;
   categorySlug?: string;
+  sort?: ProductSort;
 }): Promise<ProductListItem[]> {
   const sb = createSupabasePublicClient();
-  let query = sb
-    .from('Product')
-    .select(LIST_SELECT)
-    .in('status', ['ACTIVE', 'SOLD_OUT'])
-    .order('createdAt', { ascending: false });
 
-  if (options?.search) {
-    query = query.ilike('title', `%${options.search}%`);
+  let categoryId: string | undefined;
+  if (options?.categorySlug) {
+    const { data: cat } = await sb
+      .from('Category')
+      .select('id')
+      .eq('slug', options.categorySlug)
+      .maybeSingle();
+    categoryId = (cat as { id: string } | null)?.id;
+    if (!categoryId) return [];
+  }
+
+  let query = sb.from('Product').select(LIST_SELECT).in('status', ['ACTIVE', 'SOLD_OUT']);
+  if (categoryId) query = query.eq('categoryId', categoryId);
+  if (options?.search) query = query.ilike('title', `%${options.search}%`);
+
+  switch (options?.sort) {
+    case 'price_asc':
+      query = query.order('price', { ascending: true });
+      break;
+    case 'price_desc':
+      query = query.order('price', { ascending: false });
+      break;
+    default:
+      query = query.order('createdAt', { ascending: false });
   }
 
   const { data, error } = await query;
   if (error) throw error;
-
   return (data ?? []).map((row) => mapListItem(row as ProductRow));
 }
 
@@ -45,7 +64,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   const { data, error } = await sb
     .from('Product')
     .select(
-      `${LIST_SELECT},description,attributes,seoTitle,seoDescription,Category(name),ProductImage(storagePath,sortOrder,alt)`,
+      `${LIST_COLUMNS},description,attributes,seoTitle,seoDescription,Category(name),ProductImage(storagePath,sortOrder,alt)`,
     )
     .eq('slug', slug)
     .in('status', ['ACTIVE', 'SOLD_OUT'])

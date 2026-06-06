@@ -4,14 +4,26 @@ import { Button } from '@/components/ui/button';
 import { getSetting } from '@/lib/settings';
 import { loadSettings } from '@/modules/settings/load';
 import { listPublishedBanners } from '@/modules/cms/repository';
+import { env } from '@/lib/env';
 
 export default async function HomePage() {
   await loadSettings();
   const storeName = getSetting('store.name');
   const banners = await listPublishedBanners();
 
+  const orgJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: storeName,
+    url: env.siteUrl,
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
       {banners.length > 0 && (
         <div className="border-b bg-primary text-primary-foreground">
           <div className="container flex flex-wrap items-center justify-center gap-x-2 py-2 text-sm">

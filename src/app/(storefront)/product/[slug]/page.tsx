@@ -73,11 +73,30 @@ export default async function ProductPage({
     },
   };
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: env.siteUrl },
+      { '@type': 'ListItem', position: 2, name: 'พระเครื่อง', item: `${env.siteUrl}/products` },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.title,
+        item: `${env.siteUrl}/product/${product.slug}`,
+      },
+    ],
+  };
+
   return (
     <div className="container py-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       <nav

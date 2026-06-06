@@ -18,6 +18,20 @@ test('product detail shows price and add-to-cart', async ({ page }) => {
   await expect(page.getByRole('button', { name: /เพิ่มลงตะกร้า|สินค้าหมด/ })).toBeVisible();
 });
 
+test('add to cart shows the item in the cart', async ({ page }) => {
+  await page.goto('/product/phra-pidta-lp-toh'); // seeded, in stock
+  await page.getByRole('button', { name: /เพิ่มลงตะกร้า/ }).click();
+  await page.goto('/cart');
+  await expect(page.getByRole('heading', { name: 'ตะกร้าสินค้า' })).toBeVisible();
+  await expect(page.getByText('พระปิดตา หลวงปู่โต๊ะ')).toBeVisible();
+});
+
+test('catalog search and sort respond', async ({ page }) => {
+  await page.goto('/products?sort=price_asc');
+  await expect(page.getByRole('heading', { name: 'พระเครื่องทั้งหมด' })).toBeVisible();
+  await expect(page.locator('a[href^="/product/"]').first()).toBeVisible();
+});
+
 test('account is protected and redirects to sign-in', async ({ page }) => {
   await page.goto('/account');
   await expect(page).toHaveURL(/\/sign-in/);
