@@ -113,3 +113,16 @@ pnpm test:e2e                # Playwright end-to-end
   i18n layer can reach, not inlined ad hoc.
 - Slips and product images go through Supabase Storage + image transformation;
   never serve user uploads unoptimized or from arbitrary origins.
+- **Global Settings drive behavior.** Anything an admin should be able to toggle
+  (e.g. whether stock is shown, default theme, payment channels, shipping fees,
+  feature flags) lives in the `GlobalSetting` table and is read via a typed
+  accessor — never hard-code it. See `docs/SPEC.md` §6.
+- **Every data-loading view ships with a skeleton.** Use App Router `loading.tsx`
+  (Suspense) + shadcn skeletons; no blank/janky frames while loading.
+- Products have a unique **slug** (auto-generated from title, admin-editable) and
+  a **stock** count; stock decrements on `Payment → PAID` and flips to
+  `SOLD_OUT` at zero.
+- The **sitemap is auto-generated** from DB content (`app/sitemap.ts`) — products,
+  categories, and published CMS pages. Don't maintain a static URL list.
+- Discounts go through the **Voucher** system (percent / fixed / free-shipping)
+  with per-user and total usage limits, recorded in `VoucherRedemption`.

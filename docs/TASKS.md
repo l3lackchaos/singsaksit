@@ -9,6 +9,9 @@
 - [ ] ตั้งค่า ESLint/Prettier, Vitest, Playwright, `.env.example`
 - [ ] เชื่อม Supabase (project, client, service role) + Prisma + migration แรก
 - [ ] Layout หลัก + design tokens + a11y baseline (skip link, focus styles)
+- [ ] **Theme switcher** (light/dark/system) ไม่มี flash on load
+- [ ] **Skeleton components** + แบบแผน `loading.tsx` (Suspense) ใช้ทั่วทั้งแอป
+- [ ] **GlobalSetting** model + typed accessor + cache/revalidate
 - [ ] CI: lint + typecheck + test
 
 ## Phase 1 — Auth & Membership
@@ -18,8 +21,10 @@
 - [ ] RBAC middleware + RLS policies (เจ้าของข้อมูลเท่านั้น / admin)
 
 ## Phase 2 — Catalog & Storefront
-- [ ] Prisma model: Category, Product, ProductImage
-- [ ] หน้าแรก + hero, หน้าแคตตาล็อก, หน้าสินค้า (RSC + SEO metadata)
+- [ ] Prisma model: Category, Product (slug + stock), ProductImage
+- [ ] auto-slug จาก title (กัน duplicate) + แก้เองได้, route `/product/:slug`
+- [ ] แสดง stock / ป้ายเหลือน้อย / ซ่อนสินค้าหมด — ควบคุมด้วย GlobalSetting
+- [ ] หน้าแรก + hero, หน้าแคตตาล็อก, หน้าสินค้า (RSC + SEO metadata) + skeleton
 - [ ] ค้นหา/กรอง/เรียงลำดับ
 - [ ] อัปโหลด+optimize รูปสินค้า (Supabase Storage + next/image)
 - [ ] Cache catalog ด้วย cache tags + Redis
@@ -27,7 +32,7 @@
 ## Phase 3 — Cart, Checkout & Orders
 - [ ] Cart/CartItem, หน้า cart, checkout
 - [ ] สร้าง Order + OrderItem (snapshot ราคา), order history/detail
-- [ ] Coupon/ส่วนลด, ค่าจัดส่ง
+- [ ] **Voucher/ส่วนลด** (PERCENT/FIXED/FREE_SHIPPING) + จำกัดสิทธิ์ + redemption, ค่าจัดส่ง
 - [ ] State machine ของ Order (ดู SPEC §2)
 
 ## Phase 4 — Payments (Admin Confirm) ★ หัวใจ
@@ -47,10 +52,13 @@
 - [ ] จัดการสินค้า/หมวดหมู่/สต็อก
 - [ ] CMS: หน้า, แบนเนอร์, เนื้อหา hero
 - [ ] จัดการ EmailTemplate (แก้ subject/body/ตัวแปร)
+- [ ] จัดการ Voucher (สร้าง/แก้/ดูการใช้งาน)
+- [ ] หน้า **Global Settings** (แสดงสต็อก, ธีม, จ่ายเงิน, จัดส่ง, SEO, feature flags)
 - [ ] จัดการผู้ใช้/role, ตั้งค่าร้าน
 
 ## Phase 7 — Marketing, SEO & Analytics
-- [ ] sitemap.xml, robots.txt, JSON-LD (Product/Offer/Breadcrumb/Organization)
+- [ ] **auto sitemap.xml** (จากสินค้า/หมวด/หน้า CMS ใน DB) + robots.txt, JSON-LD
+      (Product/Offer/Breadcrumb/Organization)
 - [ ] GTM + GA4 + Meta Pixel + e-commerce events (purchase ฯลฯ)
 - [ ] ระบบย่อลิงก์ `/s/:code` + สถิติคลิก
 - [ ] โปรโมชัน/คูปอง หน้า marketing

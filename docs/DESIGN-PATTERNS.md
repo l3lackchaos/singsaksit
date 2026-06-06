@@ -71,3 +71,6 @@ docs/
 - ทุก action ของ admin ที่มีผลต่อเงิน/สิทธิ์/ราคา → เขียน `AuditLog`
 - อัปโหลดไฟล์ (สลิป/รูป) → ผ่าน Supabase Storage เท่านั้น + ตรวจชนิด/ขนาดด้วย Zod
 - คอมโพเนนต์ UI ใหม่ ยืนบน shadcn/ui (Radix) เพื่อ a11y โดยปริยาย
+- ทุกพฤติกรรมที่ admin ควรปรับได้ อ่านจาก `GlobalSetting` ผ่าน typed accessor — ห้าม hard-code
+- ทุกส่วนที่โหลดข้อมูล ต้องมี `loading.tsx`/skeleton คู่กันเสมอ
+- `sitemap.ts` ดึงข้อมูลจาก repository เดียวกับ storefront (ไม่ query ซ้ำซ้อน)
