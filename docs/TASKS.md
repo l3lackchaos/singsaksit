@@ -12,7 +12,7 @@
 - [x] **Theme switcher** (light/dark/system) ไม่มี flash on load
 - [x] **Skeleton components** + แบบแผน `loading.tsx` (Suspense)
 - [x] **GlobalSetting** typed accessor + unit test
-- [ ] เชื่อม Supabase จริง (project, client, service role) + รัน migration แรก — รอ backend
+- [x] เชื่อม Supabase จริง (project `singsaksit`, anon client) + apply schema + RLS + seed
 - [ ] Playwright e2e setup
 - [ ] CI: lint + typecheck + test
 
@@ -24,12 +24,13 @@
 - [ ] RBAC middleware + RLS policies (เจ้าของข้อมูลเท่านั้น / admin)
 - [ ] Rate limit login/reset (Upstash)
 
-## Phase 2 — Catalog & Storefront
-- [ ] Prisma model: Category, Product (slug + stock), ProductImage
-- [ ] auto-slug จาก title (กัน duplicate) + แก้เองได้, route `/product/:slug`
-- [ ] แสดง stock / ป้ายเหลือน้อย / ซ่อนสินค้าหมด — ควบคุมด้วย GlobalSetting
-- [ ] หน้าแรก + hero, หน้าแคตตาล็อก, หน้าสินค้า (RSC + SEO metadata) + skeleton
-- [ ] ค้นหา (Postgres full-text ไทย)/กรอง/เรียงลำดับ
+## Phase 2 — Catalog & Storefront 🚧
+- [x] Prisma model: Category, Product (slug + stock), ProductImage
+- [x] route `/product/:slug` + repository (Supabase, RLS public read)
+- [x] แสดง stock / ป้ายเหลือน้อย / ซ่อนสินค้าหมด — ควบคุมด้วย GlobalSetting (DB-driven)
+- [x] หน้าแรก + hero, หน้าแคตตาล็อก, หน้าสินค้า (RSC + SEO metadata + JSON-LD) + skeleton
+- [x] ค้นหาเบื้องต้น (ilike) — อัปเกรดเป็น Postgres full-text ไทยภายหลัง
+- [ ] auto-slug จาก title ตอนสร้างใน admin (กัน duplicate)
 - [ ] อัปโหลด+optimize รูปสินค้า (Supabase Storage + next/image)
 - [ ] Cache catalog ด้วย cache tags + Redis
 - [ ] **Reviews**: ให้คะแนน/รีวิว (เฉพาะผู้ซื้อ) + แสดงคะแนนเฉลี่ย + AggregateRating
@@ -65,8 +66,8 @@
 - [ ] จัดการผู้ใช้/role, ตั้งค่าร้าน
 
 ## Phase 7 — Marketing, SEO & Analytics
-- [ ] **auto sitemap.xml** (จากสินค้า/หมวด/หน้า CMS ใน DB) + robots.txt, JSON-LD
-      (Product/Offer/Breadcrumb/Organization)
+- [x] **auto sitemap.xml** (จากสินค้าใน DB) + robots.txt (noindex หน้า private) + JSON-LD Product/Offer
+- [ ] เพิ่ม Category/CmsPage ใน sitemap + JSON-LD Breadcrumb/Organization
 - [ ] **PDPA**: cookie consent banner (gate GA/Pixel), ConsentLog, หน้านโยบาย, สิทธิเจ้าของข้อมูล
 - [ ] GTM + GA4 + Meta Pixel + e-commerce events (purchase ฯลฯ) — โหลดตาม consent
 - [ ] ระบบย่อลิงก์ `/s/:code` (Postgres canonical + Redis cache/counter) + สถิติคลิก

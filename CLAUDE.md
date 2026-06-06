@@ -4,12 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-**Phase 0 scaffolded.** The Next.js app is set up and the full verification gate
-passes (`pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`). The data model
-lives in `prisma/schema.prisma`; theme switching, design tokens, the Global
-Settings accessor, and skeleton loading are in place. Remaining phases (auth,
-catalog, cart/checkout, payments, shipping/realtime, admin/CMS, marketing/SEO,
-PWA/hardening) are tracked in `docs/TASKS.md` with done-criteria in `docs/GOALS.md`.
+**Phase 0 done; Phase 2 in progress.** The full verification gate passes
+(`pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`). A live Supabase project
+(`singsaksit`) is provisioned with the full schema, RLS policies, the
+`handle_new_user` trigger, seeded Global Settings, and sample products. The
+storefront (home/hero, catalog, product detail), DB-driven stock display,
+auto `sitemap.xml`/`robots.txt`, and JSON-LD are live and read real data via the
+Supabase anon client under RLS. Remaining phases (auth, cart/checkout, payments,
+shipping/realtime, admin/CMS, marketing, PWA/hardening) are tracked in
+`docs/TASKS.md` with done-criteria in `docs/GOALS.md`.
+
+> **Data access today:** public reads use the Supabase anon client (RLS-enforced).
+> Privileged server writes / admin / Prisma-runtime need one secret in `.env`
+> (`DATABASE_URL` or `SUPABASE_SERVICE_ROLE_KEY`) — not committed. Schema changes
+> are applied via Supabase migrations; keep `prisma/schema.prisma` as the source of
+> truth and regenerate types after changes.
 
 > Read the planning docs before writing code. They are the source of truth for
 > scope and decisions:
