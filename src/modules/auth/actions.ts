@@ -69,7 +69,7 @@ export async function requestPasswordResetAction(
 
   const sb = await createSupabaseServerClient();
   await sb.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${env.siteUrl}/auth/callback?next=/account`,
+    redirectTo: `${env.siteUrl}/auth/callback?next=/reset-password`,
   });
   // Always report success to avoid leaking which emails are registered.
   return { success: 'หากอีเมลนี้มีอยู่ในระบบ เราได้ส่งลิงก์รีเซ็ตรหัสผ่านให้แล้ว' };

@@ -7,6 +7,7 @@ import {
   Settings,
   ClipboardCheck,
   Link2,
+  Star,
 } from 'lucide-react';
 import { requireAdmin } from '@/lib/auth';
 
@@ -17,6 +18,7 @@ const NAV = [
   { href: '/admin/payments', label: 'ตรวจสลิป', icon: ClipboardCheck },
   { href: '/admin/orders', label: 'คำสั่งซื้อ', icon: Receipt },
   { href: '/admin/products', label: 'สินค้า', icon: Package },
+  { href: '/admin/reviews', label: 'รีวิว', icon: Star },
   { href: '/admin/links', label: 'ย่อลิงก์', icon: Link2 },
   { href: '/admin/settings', label: 'ตั้งค่า', icon: Settings },
 ];

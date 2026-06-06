@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getOrderDetail } from '@/modules/orders/repository';
 import { OrderStatusTimeline } from '@/modules/orders/components/order-status-timeline';
 import { ShipForm } from '@/modules/admin/components/ship-form';
+import { RefundButton } from '@/modules/admin/components/refund-button';
 import { RealtimeRefresh } from '@/components/realtime-refresh';
 import { PAYMENT_STATUS_LABEL } from '@/modules/orders/labels';
 import { formatThb } from '@/lib/money';
@@ -16,6 +17,7 @@ export default async function AdminOrderDetail({
   if (!order) notFound();
 
   const canShip = order.status === 'PAID' || order.status === 'PROCESSING';
+  const canRefund = ['PAID', 'PROCESSING', 'SHIPPED'].includes(order.status);
 
   return (
     <div className="max-w-2xl">
@@ -60,6 +62,16 @@ export default async function AdminOrderDetail({
           </p>
         )}
       </section>
+
+      {canRefund && (
+        <section className="mt-6 rounded-lg border border-destructive/30 p-5">
+          <h2 className="mb-3 font-semibold">คืนเงิน</h2>
+          <p className="mb-3 text-sm text-muted-foreground">
+            คืนสต็อกสินค้าและเปลี่ยนสถานะคำสั่งซื้อเป็น “คืนเงินแล้ว”
+          </p>
+          <RefundButton orderId={order.id} />
+        </section>
+      )}
     </div>
   );
 }

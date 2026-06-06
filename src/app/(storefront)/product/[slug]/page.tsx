@@ -9,6 +9,9 @@ import { StockBadge } from '@/modules/catalog/components/product-card';
 import { WishlistButton } from '@/modules/wishlist/components/wishlist-button';
 import { isInWishlist } from '@/modules/wishlist/repository';
 import { AddToCartButton } from '@/modules/cart/components/add-to-cart-button';
+import { ReviewSection } from '@/modules/reviews/components/review-section';
+import { getRatingSummary } from '@/modules/reviews/repository';
+import { getUser } from '@/lib/auth';
 import { formatThb, satangToBaht } from '@/lib/money';
 import { env } from '@/lib/env';
 
@@ -41,6 +44,7 @@ export default async function ProductPage({
   const lowStockBadge = getSetting('display.lowStockBadge');
   const soldOut = product.status === 'SOLD_OUT' || product.stock <= 0;
   const saved = await isInWishlist(product.id);
+  const [user, rating] = await Promise.all([getUser(), getRatingSummary(product.id)]);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -48,6 +52,15 @@ export default async function ProductPage({
     name: product.title,
     description: product.description,
     category: product.categoryName ?? undefined,
+    ...(rating.count > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: rating.avg,
+            reviewCount: rating.count,
+          },
+        }
+      : {}),
     offers: {
       '@type': 'Offer',
       priceCurrency: 'THB',
@@ -143,6 +156,8 @@ export default async function ProductPage({
           </p>
         </div>
       </div>
+
+      <ReviewSection productId={product.id} canReview={Boolean(user)} />
     </div>
   );
 }

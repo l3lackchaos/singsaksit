@@ -37,6 +37,15 @@ export async function rejectPaymentAction(
   return { success: 'ปฏิเสธสลิปแล้ว' };
 }
 
+export async function refundOrderAction(orderId: string): Promise<ActionResult> {
+  await requireAdmin();
+  const sb = await createSupabaseServerClient();
+  const { error } = await sb.rpc('refund_order', { p_order_id: orderId });
+  revalidatePath(`/admin/orders/${orderId}`);
+  if (error) return { error: error.message };
+  return { success: 'คืนเงินและคืนสต็อกแล้ว' };
+}
+
 export async function shipOrderAction(
   _prev: ActionResult,
   formData: FormData,
