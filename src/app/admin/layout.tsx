@@ -1,6 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { LayoutDashboard, Receipt, Package, Settings, ClipboardCheck } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Receipt,
+  Package,
+  Settings,
+  ClipboardCheck,
+  Link2,
+} from 'lucide-react';
 import { requireAdmin } from '@/lib/auth';
 
 export const metadata: Metadata = { title: 'ผู้ดูแลระบบ', robots: { index: false } };
@@ -10,6 +17,7 @@ const NAV = [
   { href: '/admin/payments', label: 'ตรวจสลิป', icon: ClipboardCheck },
   { href: '/admin/orders', label: 'คำสั่งซื้อ', icon: Receipt },
   { href: '/admin/products', label: 'สินค้า', icon: Package },
+  { href: '/admin/links', label: 'ย่อลิงก์', icon: Link2 },
   { href: '/admin/settings', label: 'ตั้งค่า', icon: Settings },
 ];
 

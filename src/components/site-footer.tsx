@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { CookieSettingsLink } from '@/components/cookie-settings-link';
 import { getSetting } from '@/lib/settings';
 
 export function SiteFooter() {
@@ -38,9 +39,7 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link href="/cookies" className="hover:text-primary">
-                ตั้งค่าคุกกี้
-              </Link>
+              <CookieSettingsLink />
             </li>
           </ul>
         </nav>

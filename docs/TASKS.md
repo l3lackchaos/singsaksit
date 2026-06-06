@@ -68,16 +68,16 @@
 - [ ] CMS: หน้า, แบนเนอร์, เนื้อหา hero
 - [ ] จัดการ EmailTemplate / Coupon / Moderation รีวิว / จัดการ role
 
-## Phase 7 — Marketing, SEO & Analytics
+## Phase 7 — Marketing, SEO & Analytics ✅🚧
 - [x] **auto sitemap.xml** (จากสินค้าใน DB) + robots.txt (noindex หน้า private) + JSON-LD Product/Offer
+- [x] **PDPA**: cookie consent banner (gate GA/GTM/Pixel), ConsentLog, หน้านโยบาย
+- [x] GA4 + GTM + Meta Pixel โหลดเฉพาะเมื่อ consent (IDs จาก env)
+- [x] ระบบย่อลิงก์ `/s/:code` (Postgres canonical + RPC นับคลิก) + จัดการในแอดมิน
 - [ ] เพิ่ม Category/CmsPage ใน sitemap + JSON-LD Breadcrumb/Organization
-- [ ] **PDPA**: cookie consent banner (gate GA/Pixel), ConsentLog, หน้านโยบาย, สิทธิเจ้าของข้อมูล
-- [ ] GTM + GA4 + Meta Pixel + e-commerce events (purchase ฯลฯ) — โหลดตาม consent
-- [ ] ระบบย่อลิงก์ `/s/:code` (Postgres canonical + Redis cache/counter) + สถิติคลิก
-- [ ] หน้าโปรโมชัน/แคมเปญ (ใช้ Coupon + short links)
+- [ ] e-commerce events (purchase ฯลฯ) + counter cache บน Redis
 
-## Phase 8 — Hardening, PWA & Launch
-- [ ] **PWA**: manifest + service worker (แคช catalog, ออฟไลน์ fallback, online-only checkout)
+## Phase 8 — Hardening, PWA & Launch 🚧
+- [x] **PWA**: manifest + service worker (SWR แคช หน้า public, online-only สำหรับ checkout/admin/auth)
 - [ ] **Error monitoring** (Sentry) client/server + data retention job (ลบสลิปเกินกำหนด)
 - [ ] เทส e2e flow หลัก (checkout → จ่าย → ยืนยัน → ส่ง)
 - [ ] ตรวจ a11y (WCAG 2.1 AA) + Lighthouse ≥ 90

@@ -1,6 +1,8 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Providers } from '@/components/providers';
+import { Analytics } from '@/components/analytics';
+import { ServiceWorkerRegister } from '@/components/sw-register';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { getSetting } from '@/lib/settings';
@@ -15,6 +17,10 @@ export const metadata: Metadata = {
   },
   description:
     'ร้านพระเครื่องออนไลน์ ชำระเงินผ่าน PromptPay/โอนธนาคาร พร้อมระบบยืนยันสลิปและติดตามสถานะแบบเรียลไทม์',
+};
+
+export const viewport: Viewport = {
+  themeColor: '#9a6a2f',
 };
 
 export default function RootLayout({
@@ -37,6 +43,8 @@ export default function RootLayout({
             </main>
             <SiteFooter />
           </div>
+          <Analytics />
+          <ServiceWorkerRegister />
         </Providers>
       </body>
     </html>

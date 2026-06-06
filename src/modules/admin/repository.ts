@@ -114,6 +114,23 @@ export async function getProduct(id: string): Promise<AdminProductRow & { descri
   return (data as (AdminProductRow & { description: string }) | null) ?? null;
 }
 
+export interface ShortLinkRow {
+  code: string;
+  targetUrl: string;
+  clicks: number;
+  createdAt: string;
+}
+
+export async function listShortLinks(): Promise<ShortLinkRow[]> {
+  const sb = await createSupabaseServerClient();
+  const { data, error } = await sb
+    .from('ShortLink')
+    .select('code,targetUrl,clicks,createdAt')
+    .order('createdAt', { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as ShortLinkRow[];
+}
+
 export async function getAllSettings(): Promise<Record<string, unknown>> {
   const sb = await createSupabaseServerClient();
   const { data } = await sb.from('GlobalSetting').select('key,value');

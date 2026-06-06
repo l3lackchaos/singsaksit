@@ -117,6 +117,38 @@ export async function upsertProductAction(
   return { success: 'บันทึกสินค้าแล้ว' };
 }
 
+export async function createShortLinkAction(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireAdmin();
+  const schema = z.object({
+    targetUrl: z.string().url('ลิงก์ปลายทางไม่ถูกต้อง'),
+    code: z
+      .string()
+      .regex(/^[a-zA-Z0-9_-]*$/, 'ใช้ได้เฉพาะ a-z 0-9 - _')
+      .max(40)
+      .optional(),
+  });
+  const parsed = schema.safeParse({
+    targetUrl: formData.get('targetUrl'),
+    code: formData.get('code') || undefined,
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'ข้อมูลไม่ถูกต้อง' };
+
+  const code = parsed.data.code?.trim() || Math.random().toString(36).slice(2, 8);
+  const sb = await createSupabaseServerClient();
+  const { error } = await sb.from('ShortLink').insert({
+    id: crypto.randomUUID(),
+    code,
+    targetUrl: parsed.data.targetUrl,
+  });
+  if (error) return { error: 'สร้างลิงก์ไม่สำเร็จ (โค้ดอาจซ้ำ)' };
+
+  revalidatePath('/admin/links');
+  return { success: `สร้างลิงก์ /s/${code} แล้ว` };
+}
+
 export async function updateSettingsAction(
   _prev: ActionResult,
   formData: FormData,

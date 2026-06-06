@@ -4,6 +4,7 @@ import * as React from 'react';
 import { ThemeProvider } from 'next-themes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CartProvider } from '@/modules/cart/cart-store';
+import { ConsentProvider } from '@/modules/consent/consent-context';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(
@@ -21,7 +22,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       <QueryClientProvider client={queryClient}>
-        <CartProvider>{children}</CartProvider>
+        <ConsentProvider>
+          <CartProvider>{children}</CartProvider>
+        </ConsentProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );
