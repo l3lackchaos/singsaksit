@@ -11,14 +11,17 @@ RLS on every table, SECURITY DEFINER RPCs for the order domain
 (`create_order`, `confirm_payment`, `reject_payment`, `ship_order`, `refund_order`,
 `submit_review`, `resolve_short_link`, `cancel_expired_orders` via pg_cron),
 `handle_new_user` trigger, private slips bucket, seeded settings + sample products.
-Implemented end-to-end: storefront + search + reviews, auth (email/OAuth) +
-profile + wishlist, cart → checkout → order, Admin-Confirm payments (PromptPay QR
-/ bank + slip upload + admin review with atomic oversell-safe stock), shipping +
-realtime, admin (dashboard, slip queue, orders/ship/refund, products, coupons,
-CMS pages/banners, reviews, short links, settings), SEO (auto sitemap/robots/
-JSON-LD), PDPA consent + gated analytics, and PWA. Remaining tail (email sending,
-AuditLog wiring, Upstash cache/rate-limit, Sentry, address book, role UI, full
-purchase-path e2e) is tracked in `docs/TASKS.md`; done-criteria in `docs/GOALS.md`.
+Implemented end-to-end: storefront + search/filter/sort + reviews, auth
+(email/OAuth) + profile + wishlist + address book, cart → checkout → order,
+Admin-Confirm payments (PromptPay QR / bank + slip upload + admin review with
+atomic oversell-safe stock), shipping + realtime, product image upload, admin
+(dashboard, slip queue, orders/ship/refund, products+images, coupons +
+redemption limits, CMS pages/banners, email-template editor, reviews, short
+links, users/roles, settings), AuditLog, transactional email (Resend, no-op
+without key), SEO (auto sitemap/robots/JSON-LD incl. Organization + Breadcrumb +
+AggregateRating), PDPA consent + gated analytics + data-retention cron, and PWA.
+Remaining tail (Upstash cache/rate-limit, Sentry, full purchase-path e2e with a
+seeded admin) is tracked in `docs/TASKS.md`; done-criteria in `docs/GOALS.md`.
 
 > **Setup to go live:** configure OAuth providers (Google/Facebook) + Resend +
 > analytics IDs in the dashboard/env, and promote one user to `ADMIN`.

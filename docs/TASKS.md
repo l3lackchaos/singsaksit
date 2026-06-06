@@ -32,10 +32,10 @@
 - [x] route `/product/:slug` + repository (Supabase, RLS public read)
 - [x] แสดง stock / ป้ายเหลือน้อย / ซ่อนสินค้าหมด — ควบคุมด้วย GlobalSetting (DB-driven)
 - [x] หน้าแรก + hero, หน้าแคตตาล็อก, หน้าสินค้า (RSC + SEO metadata + JSON-LD) + skeleton
-- [x] ค้นหาเบื้องต้น (ilike) — อัปเกรดเป็น Postgres full-text ไทยภายหลัง
-- [ ] auto-slug จาก title ตอนสร้างใน admin (กัน duplicate)
-- [ ] อัปโหลด+optimize รูปสินค้า (Supabase Storage + next/image)
-- [ ] Cache catalog ด้วย cache tags + Redis
+- [x] ค้นหา (trgm) + กรองหมวด + เรียงราคา/ใหม่ล่าสุด
+- [x] auto-slug จาก title ตอนสร้างใน admin (กัน duplicate)
+- [x] อัปโหลด+optimize รูปสินค้า (Supabase Storage + next/image)
+- [ ] Cache catalog ด้วย cache tags + Redis (รอ Upstash)
 - [x] **Reviews**: ให้คะแนน/รีวิว (เฉพาะผู้ซื้อ, RPC) + คะแนนเฉลี่ย + AggregateRating + moderation
 
 ## Phase 3 — Cart, Checkout & Orders ✅🚧
@@ -67,7 +67,7 @@
 - [x] หน้า **Global Settings** (ชื่อร้าน, แสดงสต็อก, ธีม, PromptPay, ค่าส่ง, feature flags)
 - [x] CMS: หน้า (sanitized) + แบนเนอร์หน้าแรก
 - [x] จัดการ Coupon + Moderation รีวิว
-- [ ] จัดการ EmailTemplate / จัดการ role (ผ่าน UI)
+- [x] จัดการ EmailTemplate + จัดการ role (ผ่าน UI) + AuditLog + รูปสินค้า
 
 ## Phase 7 — Marketing, SEO & Analytics ✅🚧
 - [x] **auto sitemap.xml** (จากสินค้าใน DB) + robots.txt (noindex หน้า private) + JSON-LD Product/Offer
@@ -79,7 +79,9 @@
 
 ## Phase 8 — Hardening, PWA & Launch 🚧
 - [x] **PWA**: manifest + service worker (SWR แคช หน้า public, online-only สำหรับ checkout/admin/auth)
-- [ ] **Error monitoring** (Sentry) client/server + data retention job (ลบสลิปเกินกำหนด)
+- [x] data retention job ลบสลิปเกินกำหนด (pg_cron `purge_expired_slips`)
+- [ ] **Error monitoring** (Sentry) — รอ DSN
+- [ ] Rate limit / Redis cache (Upstash) — รอ creds
 - [x] เทส e2e smoke (home, catalog, product, auth guard, robots/sitemap)
 - [ ] เทส e2e flow เต็ม (checkout → จ่าย → ยืนยัน → ส่ง) ด้วยผู้ใช้จริง
 - [ ] ตรวจ a11y (WCAG 2.1 AA) + Lighthouse ≥ 90
