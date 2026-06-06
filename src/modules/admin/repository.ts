@@ -142,6 +142,24 @@ export async function getCmsPage(id: string): Promise<CmsPageRow | null> {
   return (data as CmsPageRow | null) ?? null;
 }
 
+export interface UserRow {
+  id: string;
+  email: string;
+  name: string | null;
+  role: string;
+  createdAt: string;
+}
+
+export async function listUsers(): Promise<UserRow[]> {
+  const sb = await createSupabaseServerClient();
+  const { data, error } = await sb
+    .from('Profile')
+    .select('id,email,name,role,createdAt')
+    .order('createdAt', { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as UserRow[];
+}
+
 export interface ProductImageRow {
   id: string;
   storagePath: string;

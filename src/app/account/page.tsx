@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Heart, Package, LogOut } from 'lucide-react';
+import { Heart, Package, LogOut, MapPin } from 'lucide-react';
 import { getProfile } from '@/lib/auth';
 import { signOutAction } from '@/modules/auth/actions';
 import { ProfileForm } from '@/modules/account/components/profile-form';
@@ -43,6 +43,16 @@ export default async function AccountPage() {
           <div>
             <p className="font-medium">รายการโปรด</p>
             <p className="text-sm text-muted-foreground">พระเครื่องที่คุณบันทึกไว้</p>
+          </div>
+        </Link>
+        <Link
+          href="/account/addresses"
+          className="flex items-center gap-3 rounded-lg border bg-card p-4 hover:shadow-sm"
+        >
+          <MapPin className="h-6 w-6 text-primary" />
+          <div>
+            <p className="font-medium">ที่อยู่จัดส่ง</p>
+            <p className="text-sm text-muted-foreground">จัดการที่อยู่สำหรับจัดส่ง</p>
           </div>
         </Link>
       </div>

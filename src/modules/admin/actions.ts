@@ -7,6 +7,7 @@ import { requireAdmin } from '@/lib/auth';
 import { bahtToSatang } from '@/lib/money';
 import { slugify } from '@/modules/catalog/slug';
 import { sanitizeRichText } from '@/lib/sanitize';
+import { logAudit } from './audit';
 
 export interface ActionResult {
   error?: string;
@@ -124,7 +125,24 @@ export async function upsertProductAction(
 
   revalidatePath('/admin/products');
   revalidatePath('/products');
+  await logAudit(parsed.data.id ? 'update_product' : 'create_product', 'Product', parsed.data.id, {
+    title: parsed.data.title,
+  });
   return { success: 'บันทึกสินค้าแล้ว' };
+}
+
+export async function changeRoleAction(userId: string, role: string): Promise<ActionResult> {
+  await requireAdmin();
+  if (!['CUSTOMER', 'STAFF', 'ADMIN'].includes(role)) return { error: 'role ไม่ถูกต้อง' };
+  const sb = await createSupabaseServerClient();
+  const { error } = await sb
+    .from('Profile')
+    .update({ role, updatedAt: new Date().toISOString() })
+    .eq('id', userId);
+  if (error) return { error: error.message };
+  await logAudit('change_role', 'Profile', userId, { role });
+  revalidatePath('/admin/users');
+  return { success: 'อัปเดตสิทธิ์แล้ว' };
 }
 
 export async function createShortLinkAction(
@@ -268,6 +286,7 @@ export async function createCouponAction(
     updatedAt: new Date().toISOString(),
   });
   if (error) return { error: 'สร้างคูปองไม่สำเร็จ (โค้ดอาจซ้ำ)' };
+  await logAudit('create_coupon', 'Coupon', undefined, { code: parsed.data.code });
   revalidatePath('/admin/coupons');
   return { success: 'สร้างคูปองแล้ว' };
 }
