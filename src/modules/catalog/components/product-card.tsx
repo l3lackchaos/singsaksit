@@ -25,7 +25,7 @@ export function StockBadge({
   }
   if (lowStockBadge && product.stock <= product.lowStockThreshold) {
     return (
-      <span className="rounded-full bg-warning/15 px-2 py-0.5 text-xs font-medium text-warning">
+      <span className="rounded-full bg-warning/15 px-2 py-0.5 text-xs font-medium text-warning-emphasis">
         เหลือน้อย{showStock ? ` ${product.stock} ชิ้น` : ''}
       </span>
     );

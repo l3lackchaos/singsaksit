@@ -53,7 +53,7 @@ export function PaymentPanel({
 
   if (status === 'PENDING_REVIEW') {
     return (
-      <div className="rounded-md bg-warning/10 px-4 py-3 text-sm font-medium text-warning">
+      <div className="rounded-md bg-warning/10 px-4 py-3 text-sm font-medium text-warning-emphasis">
         ⏳ ได้รับสลิปแล้ว กำลังรอแอดมินตรวจสอบ — สถานะจะอัปเดตอัตโนมัติ
       </div>
     );

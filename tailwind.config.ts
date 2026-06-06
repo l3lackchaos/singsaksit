@@ -47,6 +47,7 @@ const config: Config = {
         warning: {
           DEFAULT: 'hsl(var(--warning))',
           foreground: 'hsl(var(--warning-foreground))',
+          emphasis: 'hsl(var(--warning-emphasis))',
         },
         card: {
           DEFAULT: 'hsl(var(--card))',
