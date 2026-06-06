@@ -54,7 +54,7 @@ export function ProductCard({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="group flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <div
         className={cn(

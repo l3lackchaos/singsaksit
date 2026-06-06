@@ -101,3 +101,48 @@
 .measure {
   max-width: 68ch;
 }
+
+/* ---- Motion ---------------------------------------------------------------
+   One calm signature entrance + a list stagger. Transform/opacity only,
+   ease-out, no bounce. Gated on no-preference so reduced-motion users get the
+   final (visible) state with no movement. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  /* Sibling stagger for a single list (e.g. the product grid). Capped. */
+  .stagger > * {
+    animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0.04s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.09s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.14s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.19s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.24s; }
+  .stagger > *:nth-child(6) { animation-delay: 0.29s; }
+  .stagger > *:nth-child(7) { animation-delay: 0.34s; }
+  .stagger > *:nth-child(8) { animation-delay: 0.39s; }
+}
+
+/* Honour reduced-motion everywhere: near-instant transitions/animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

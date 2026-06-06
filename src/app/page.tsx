@@ -47,7 +47,7 @@ export default async function HomePage() {
       {/* Hero — centered + generous air (calm, sacred). Rhythm via varied gaps:
           tight badge→title, then a deliberate jump before the call to action. */}
       <section className="relative overflow-hidden border-b bg-gradient-to-b from-secondary/60 to-background">
-        <div className="container flex flex-col items-center py-[clamp(4.5rem,11vw,9rem)] text-center">
+        <div className="reveal container flex flex-col items-center py-[clamp(4.5rem,11vw,9rem)] text-center">
           <span className="rounded-full border bg-background/60 px-4 py-1 text-sm text-muted-foreground">
             พระแท้ ตรวจสอบได้ ชำระเงินปลอดภัย
           </span>
