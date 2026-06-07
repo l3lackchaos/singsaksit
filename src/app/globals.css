@@ -110,6 +110,15 @@
   max-width: 68ch;
 }
 
+/* Hide the scrollbar on swipe tracks (carousel) while keeping scroll/snap. */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* ---- Motion ---------------------------------------------------------------
    One calm signature entrance + a list stagger. Transform/opacity only,
    ease-out, no bounce. Gated on no-preference so reduced-motion users get the
