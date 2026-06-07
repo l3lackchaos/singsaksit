@@ -54,7 +54,10 @@ export function FeaturedCarousel({ products }: { products: ProductListItem[] }) 
   useEffect(() => {
     if (count <= 1 || paused) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const id = window.setInterval(() => scrollTo(active + 1), 6000);
+    const id = window.setInterval(() => {
+      // Don't advance while the tab is backgrounded.
+      if (!document.hidden) scrollTo(active + 1);
+    }, 6000);
     return () => window.clearInterval(id);
   }, [active, count, paused, scrollTo]);
 
