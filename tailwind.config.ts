@@ -57,6 +57,11 @@ const config: Config = {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',
         },
+        footer: {
+          DEFAULT: 'hsl(var(--footer))',
+          foreground: 'hsl(var(--footer-foreground))',
+          accent: 'hsl(var(--footer-accent))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

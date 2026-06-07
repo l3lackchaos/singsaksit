@@ -34,6 +34,11 @@
   --input: 40 20% 86%;
   --ring: 35 60% 38%;
   --radius: 0.75rem;
+
+  /* Committed deep brand surface (footer anchor) — warm near-black + bright gold. */
+  --footer: 28 28% 12%;
+  --footer-foreground: 40 24% 88%;
+  --footer-accent: 38 80% 62%;
 }
 
 .dark {
@@ -61,6 +66,9 @@
   --border: 30 8% 22%;
   --input: 30 8% 22%;
   --ring: 38 70% 55%;
+  --footer: 26 30% 9%;
+  --footer-foreground: 40 24% 88%;
+  --footer-accent: 38 82% 64%;
 }
 
 @layer base {
