@@ -433,3 +433,128 @@ export async function updateSettingsAction(
   revalidatePath('/', 'layout');
   return { success: 'บันทึกการตั้งค่าแล้ว' };
 }
+
+// ---- Homepage: hero + carousel ads -----------------------------------------
+// Stored in GlobalSetting (upserted so no pre-seeded rows are required).
+
+type AdminClient = Awaited<ReturnType<typeof createSupabaseServerClient>>;
+
+async function upsertSetting(sb: AdminClient, key: string, value: unknown) {
+  return sb
+    .from('GlobalSetting')
+    .upsert({ key, value, updatedAt: new Date().toISOString() }, { onConflict: 'key' });
+}
+
+interface CarouselAd {
+  id: string;
+  imagePath: string;
+  title: string;
+  body: string;
+  href: string;
+}
+
+async function readCarouselAds(sb: AdminClient): Promise<CarouselAd[]> {
+  const { data } = await sb
+    .from('GlobalSetting')
+    .select('value')
+    .eq('key', 'homepage.carouselAds')
+    .maybeSingle();
+  const value = (data as { value: unknown } | null)?.value;
+  return Array.isArray(value) ? (value as CarouselAd[]) : [];
+}
+
+export async function updateHeroAction(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireAdmin();
+  const schema = z.object({
+    badge: z.string().max(120).optional(),
+    title: z.string().max(120).optional(),
+    subtitle: z.string().max(160).optional(),
+    description: z.string().max(400).optional(),
+    primaryLabel: z.string().max(60).optional(),
+    primaryHref: z.string().max(300).optional(),
+    secondaryLabel: z.string().max(60).optional(),
+    secondaryHref: z.string().max(300).optional(),
+  });
+  const parsed = schema.safeParse({
+    badge: formData.get('hero.badge') ?? '',
+    title: formData.get('hero.title') ?? '',
+    subtitle: formData.get('hero.subtitle') ?? '',
+    description: formData.get('hero.description') ?? '',
+    primaryLabel: formData.get('hero.primaryLabel') ?? '',
+    primaryHref: formData.get('hero.primaryHref') ?? '',
+    secondaryLabel: formData.get('hero.secondaryLabel') ?? '',
+    secondaryHref: formData.get('hero.secondaryHref') ?? '',
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'ข้อมูลไม่ถูกต้อง' };
+
+  const sb = await createSupabaseServerClient();
+  const entries: Array<[string, string]> = [
+    ['hero.badge', parsed.data.badge ?? ''],
+    ['hero.title', parsed.data.title ?? ''],
+    ['hero.subtitle', parsed.data.subtitle ?? ''],
+    ['hero.description', parsed.data.description ?? ''],
+    ['hero.primaryLabel', parsed.data.primaryLabel ?? ''],
+    ['hero.primaryHref', parsed.data.primaryHref ?? ''],
+    ['hero.secondaryLabel', parsed.data.secondaryLabel ?? ''],
+    ['hero.secondaryHref', parsed.data.secondaryHref ?? ''],
+  ];
+  for (const [key, value] of entries) {
+    const { error } = await upsertSetting(sb, key, value);
+    if (error) return { error: error.message };
+  }
+
+  revalidatePath('/', 'layout');
+  revalidatePath('/admin/homepage');
+  return { success: 'บันทึก Hero แล้ว' };
+}
+
+export async function addCarouselAdAction(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireAdmin();
+  const schema = z.object({
+    imagePath: z.string().min(1, 'กรุณาอัปโหลดรูปก่อน').max(300),
+    title: z.string().min(1, 'กรุณากรอกหัวข้อ').max(120),
+    body: z.string().max(200).optional(),
+    href: z.string().max(300).optional(),
+  });
+  const parsed = schema.safeParse({
+    imagePath: formData.get('imagePath') ?? '',
+    title: formData.get('title') ?? '',
+    body: formData.get('body') ?? '',
+    href: formData.get('href') ?? '',
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'ข้อมูลไม่ถูกต้อง' };
+
+  const sb = await createSupabaseServerClient();
+  const ads = await readCarouselAds(sb);
+  ads.push({
+    id: crypto.randomUUID(),
+    imagePath: parsed.data.imagePath,
+    title: parsed.data.title,
+    body: parsed.data.body ?? '',
+    href: parsed.data.href ?? '',
+  });
+  const { error } = await upsertSetting(sb, 'homepage.carouselAds', ads);
+  if (error) return { error: error.message };
+
+  revalidatePath('/', 'layout');
+  revalidatePath('/admin/homepage');
+  return { success: 'เพิ่มสไลด์โฆษณาแล้ว' };
+}
+
+export async function removeCarouselAdAction(id: string): Promise<ActionResult> {
+  await requireAdmin();
+  const sb = await createSupabaseServerClient();
+  const ads = (await readCarouselAds(sb)).filter((a) => a.id !== id);
+  const { error } = await upsertSetting(sb, 'homepage.carouselAds', ads);
+  if (error) return { error: error.message };
+
+  revalidatePath('/', 'layout');
+  revalidatePath('/admin/homepage');
+  return { success: 'ลบสไลด์แล้ว' };
+}

@@ -6,7 +6,11 @@ import { loadSettings } from '@/modules/settings/load';
 import { listPublishedBanners } from '@/modules/cms/repository';
 import { listActiveProducts } from '@/modules/catalog/repository';
 import { ProductCard } from '@/modules/catalog/components/product-card';
-import { FeaturedCarousel } from '@/modules/catalog/components/featured-carousel';
+import {
+  MediaCarousel,
+  type CarouselSlide,
+} from '@/modules/catalog/components/media-carousel';
+import { formatThb } from '@/lib/money';
 import { env } from '@/lib/env';
 
 export default async function HomePage() {
@@ -14,15 +18,44 @@ export default async function HomePage() {
   const storeName = getSetting('store.name');
   const showStock = getSetting('display.showStock');
   const lowStockBadge = getSetting('display.lowStockBadge');
+  const hero = {
+    badge: getSetting('hero.badge'),
+    title: getSetting('hero.title') || storeName,
+    subtitle: getSetting('hero.subtitle'),
+    description: getSetting('hero.description'),
+    primaryLabel: getSetting('hero.primaryLabel'),
+    primaryHref: getSetting('hero.primaryHref') || '/products',
+    secondaryLabel: getSetting('hero.secondaryLabel'),
+    secondaryHref: getSetting('hero.secondaryHref') || '/about',
+  };
+  const carouselAds = getSetting('homepage.carouselAds');
   const [banners, products] = await Promise.all([
     listPublishedBanners(),
     listActiveProducts({ sort: 'new' }),
   ]);
 
-  // Prefer products with imagery in the carousel; fall back to the latest few.
+  // Admin-managed ad slides take priority; otherwise spotlight latest products.
   const withImages = products.filter((p) => p.imagePath);
   const featured = (withImages.length > 0 ? withImages : products).slice(0, 5);
   const latest = products.slice(0, 8);
+
+  const usingAds = carouselAds.length > 0;
+  const slides: CarouselSlide[] = usingAds
+    ? carouselAds.map((ad) => ({
+        id: ad.id,
+        href: ad.href || undefined,
+        imagePath: ad.imagePath || null,
+        title: ad.title,
+        subtitle: ad.body || undefined,
+      }))
+    : featured.map((p) => ({
+        id: p.id,
+        href: `/product/${p.slug}`,
+        imagePath: p.imagePath,
+        title: p.title,
+        badge: 'พระเครื่องแนะนำ',
+        price: formatThb(p.price),
+      }));
 
   const orgJsonLd = {
     '@context': 'https://schema.org',
@@ -61,34 +94,43 @@ export default async function HomePage() {
           tight badge→title, then a deliberate jump before the call to action. */}
       <section className="relative overflow-hidden border-b bg-gradient-to-b from-secondary/60 to-background">
         <div className="reveal container flex flex-col items-center py-[clamp(4.5rem,11vw,9rem)] text-center">
-          <span className="rounded-full border bg-background/60 px-4 py-1 text-sm text-muted-foreground">
-            พระแท้ ตรวจสอบได้ ชำระเงินปลอดภัย
-          </span>
+          {hero.badge && (
+            <span className="rounded-full border bg-background/60 px-4 py-1 text-sm text-muted-foreground">
+              {hero.badge}
+            </span>
+          )}
           <h1 className="text-hero mt-6 max-w-3xl font-bold">
-            {storeName}
-            <span className="mt-1 block text-primary">ศูนย์รวมพระเครื่องมงคล</span>
+            {hero.title}
+            {hero.subtitle && <span className="mt-1 block text-primary">{hero.subtitle}</span>}
           </h1>
-          <p className="mt-5 max-w-xl text-pretty leading-relaxed text-muted-foreground">
-            คัดสรรพระเครื่องคุณภาพ พร้อมระบบยืนยันการชำระเงินโดยแอดมิน
-            และติดตามสถานะคำสั่งซื้อแบบเรียลไทม์
-          </p>
+          {hero.description && (
+            <p className="mt-5 max-w-xl text-pretty leading-relaxed text-muted-foreground">
+              {hero.description}
+            </p>
+          )}
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            <Button size="lg" asChild>
-              <Link href="/products">เลือกชมพระเครื่อง</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/about">เกี่ยวกับเรา</Link>
-            </Button>
+            {hero.primaryLabel && (
+              <Button size="lg" asChild>
+                <Link href={hero.primaryHref}>{hero.primaryLabel}</Link>
+              </Button>
+            )}
+            {hero.secondaryLabel && (
+              <Button size="lg" variant="outline" asChild>
+                <Link href={hero.secondaryHref}>{hero.secondaryLabel}</Link>
+              </Button>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Featured carousel · large swipeable spotlight for hand-picked pieces. */}
-      {featured.length > 0 && (
+      {/* Carousel · admin-managed ad slides, or a product spotlight as fallback. */}
+      {slides.length > 0 && (
         <section className="border-b">
           <div className="container py-12 md:py-16">
             <div className="mb-6 flex items-end justify-between gap-4">
-              <h2 className="text-2xl font-bold tracking-tight md:text-3xl">พระเครื่องแนะนำ</h2>
+              <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+                {usingAds ? 'โปรโมชันแนะนำ' : 'พระเครื่องแนะนำ'}
+              </h2>
               <Link
                 href="/products"
                 className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary hover:underline"
@@ -96,7 +138,10 @@ export default async function HomePage() {
                 ดูทั้งหมด <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-            <FeaturedCarousel products={featured} />
+            <MediaCarousel
+              slides={slides}
+              ariaLabel={usingAds ? 'โปรโมชันแนะนำ' : 'พระเครื่องแนะนำ'}
+            />
           </div>
         </section>
       )}
