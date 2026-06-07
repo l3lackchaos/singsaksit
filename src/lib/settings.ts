@@ -16,6 +16,24 @@ export const SETTINGS_DEFAULTS = {
   'contact.lineId': '' as string,
   'contact.facebookUrl': '' as string,
   'contact.hours': 'จันทร์–เสาร์ 9:00–18:00 น.' as string,
+  // Homepage hero (admin-editable). Empty title falls back to store.name.
+  'hero.badge': 'พระแท้ ตรวจสอบได้ ชำระเงินปลอดภัย' as string,
+  'hero.title': '' as string,
+  'hero.subtitle': 'ศูนย์รวมพระเครื่องมงคล' as string,
+  'hero.description':
+    'คัดสรรพระเครื่องคุณภาพ พร้อมระบบยืนยันการชำระเงินโดยแอดมิน และติดตามสถานะคำสั่งซื้อแบบเรียลไทม์' as string,
+  'hero.primaryLabel': 'เลือกชมพระเครื่อง' as string,
+  'hero.primaryHref': '/products' as string,
+  'hero.secondaryLabel': 'เกี่ยวกับเรา' as string,
+  'hero.secondaryHref': '/about' as string,
+  // Homepage carousel ads. When non-empty they replace the auto product carousel.
+  'homepage.carouselAds': [] as Array<{
+    id: string;
+    imagePath: string;
+    title: string;
+    body: string;
+    href: string;
+  }>,
   'payment.expiryHours': 48,
   'payment.promptpayId': '',
   'payment.bankAccounts': [] as Array<{ bank: string; name: string; number: string }>,

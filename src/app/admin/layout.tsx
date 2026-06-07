@@ -13,6 +13,7 @@ import {
   Ticket,
   Users,
   Mail,
+  LayoutTemplate,
 } from 'lucide-react';
 import { requireAdmin } from '@/lib/auth';
 
@@ -20,6 +21,7 @@ export const metadata: Metadata = { title: 'ผู้ดูแลระบบ', 
 
 const NAV = [
   { href: '/admin', label: 'ภาพรวม', icon: LayoutDashboard },
+  { href: '/admin/homepage', label: 'หน้าแรก', icon: LayoutTemplate },
   { href: '/admin/payments', label: 'ตรวจสลิป', icon: ClipboardCheck },
   { href: '/admin/orders', label: 'คำสั่งซื้อ', icon: Receipt },
   { href: '/admin/products', label: 'สินค้า', icon: Package },

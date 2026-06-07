@@ -5,20 +5,38 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { formatThb } from '@/lib/money';
 import { productImageUrl } from '@/lib/supabase/storage';
-import type { ProductListItem } from '../types';
+
+export interface CarouselSlide {
+  id: string;
+  /** Optional click target. When absent, the slide is not a link. */
+  href?: string;
+  imagePath: string | null;
+  title: string;
+  /** Small pill above the title (e.g. "พระเครื่องแนะนำ"). */
+  badge?: string;
+  /** Gold-emphasis line, e.g. a price. */
+  price?: string;
+  /** Muted secondary line, e.g. ad copy. */
+  subtitle?: string;
+}
 
 /**
- * Featured-products carousel. Native scroll-snap track (real swipe on touch),
- * auto-advances every 6s but pauses on hover/focus and never autoplays under
- * prefers-reduced-motion. Prev/next + dots are layered on top.
+ * Generic full-width media carousel (product spotlights or ad slides). Native
+ * scroll-snap track (real swipe), autoplays every 6s but pauses on hover/focus,
+ * backgrounded tabs, and prefers-reduced-motion.
  */
-export function FeaturedCarousel({ products }: { products: ProductListItem[] }) {
+export function MediaCarousel({
+  slides,
+  ariaLabel = 'สไลด์',
+}: {
+  slides: CarouselSlide[];
+  ariaLabel?: string;
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  const count = products.length;
+  const count = slides.length;
 
   const scrollTo = useCallback(
     (i: number) => {
@@ -31,7 +49,6 @@ export function FeaturedCarousel({ products }: { products: ProductListItem[] }) 
     [count],
   );
 
-  // Reflect the scroll position back into the active dot.
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -50,12 +67,10 @@ export function FeaturedCarousel({ products }: { products: ProductListItem[] }) 
     };
   }, [count]);
 
-  // Autoplay — disabled when paused, single slide, or reduced-motion.
   useEffect(() => {
     if (count <= 1 || paused) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const id = window.setInterval(() => {
-      // Don't advance while the tab is backgrounded.
       if (!document.hidden) scrollTo(active + 1);
     }, 6000);
     return () => window.clearInterval(id);
@@ -66,7 +81,7 @@ export function FeaturedCarousel({ products }: { products: ProductListItem[] }) 
   return (
     <section
       aria-roledescription="carousel"
-      aria-label="พระเครื่องแนะนำ"
+      aria-label={ariaLabel}
       className="group/carousel relative"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -77,60 +92,65 @@ export function FeaturedCarousel({ products }: { products: ProductListItem[] }) 
         ref={trackRef}
         className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto scroll-smooth rounded-2xl"
       >
-        {products.map((product, i) => {
-          const soldOut = product.status === 'SOLD_OUT' || product.stock <= 0;
-          return (
-            <Link
-              key={product.id}
-              href={`/product/${product.slug}`}
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${i + 1} จาก ${count}: ${product.title}`}
-              className="relative block min-w-full snap-start focus-visible:outline-none"
-            >
-              <div className="relative aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-secondary to-muted sm:aspect-[16/9] lg:aspect-[21/9]">
-                {product.imagePath ? (
-                  <Image
-                    src={productImageUrl(product.imagePath)}
-                    alt={product.title}
-                    fill
-                    priority={i === 0}
-                    sizes="100vw"
-                    className="object-cover transition-transform duration-700 group-hover/carousel:scale-[1.03]"
-                  />
-                ) : (
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 flex items-center justify-center text-7xl font-bold text-primary/25"
-                  >
-                    พระ
-                  </span>
-                )}
-                {/* Legibility scrim for the overlaid copy. */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
-
-                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-12">
-                  <div className="max-w-xl">
+        {slides.map((slide, i) => {
+          const inner = (
+            <div className="relative aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-secondary to-muted sm:aspect-[16/9] lg:aspect-[21/9]">
+              {slide.imagePath ? (
+                <Image
+                  src={productImageUrl(slide.imagePath)}
+                  alt={slide.title}
+                  fill
+                  priority={i === 0}
+                  sizes="100vw"
+                  className="object-cover transition-transform duration-700 group-hover/carousel:scale-[1.03]"
+                />
+              ) : (
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 flex items-center justify-center text-7xl font-bold text-primary/25"
+                >
+                  พระ
+                </span>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-12">
+                <div className="max-w-xl">
+                  {slide.badge && (
                     <span className="inline-block rounded-full bg-footer-accent/90 px-3 py-1 text-xs font-medium text-footer">
-                      พระเครื่องแนะนำ
+                      {slide.badge}
                     </span>
-                    <h3 className="mt-3 font-display text-2xl font-semibold text-white drop-shadow-sm sm:text-3xl lg:text-4xl">
-                      {product.title}
-                    </h3>
-                    <div className="mt-3 flex items-center gap-3">
-                      <span className="text-lg font-semibold tabular-nums text-footer-accent">
-                        {formatThb(product.price)}
-                      </span>
-                      {soldOut && (
-                        <span className="rounded-full bg-white/15 px-2 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
-                          หมดแล้ว
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                  )}
+                  <h3 className="mt-3 font-display text-2xl font-semibold text-white drop-shadow-sm sm:text-3xl lg:text-4xl">
+                    {slide.title}
+                  </h3>
+                  {slide.price && (
+                    <p className="mt-3 text-lg font-semibold tabular-nums text-footer-accent">
+                      {slide.price}
+                    </p>
+                  )}
+                  {slide.subtitle && (
+                    <p className="mt-2 max-w-lg text-pretty text-white/85">{slide.subtitle}</p>
+                  )}
                 </div>
               </div>
+            </div>
+          );
+
+          const common = {
+            role: 'group',
+            'aria-roledescription': 'slide',
+            'aria-label': `${i + 1} จาก ${count}: ${slide.title}`,
+            className: 'relative block min-w-full snap-start focus-visible:outline-none',
+          } as const;
+
+          return slide.href ? (
+            <Link key={slide.id} href={slide.href} {...common}>
+              {inner}
             </Link>
+          ) : (
+            <div key={slide.id} {...common}>
+              {inner}
+            </div>
           );
         })}
       </div>
@@ -155,9 +175,9 @@ export function FeaturedCarousel({ products }: { products: ProductListItem[] }) 
           </button>
 
           <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-2">
-            {products.map((product, i) => (
+            {slides.map((slide, i) => (
               <button
-                key={product.id}
+                key={slide.id}
                 type="button"
                 aria-label={`ไปสไลด์ที่ ${i + 1}`}
                 aria-current={i === active}
