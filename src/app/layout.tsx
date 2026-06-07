@@ -27,7 +27,7 @@ const storeName = getSetting('store.name');
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
   title: {
-    default: `${storeName} — ศูนย์รวมพระเครื่องแท้`,
+    default: `${storeName} · ศูนย์รวมพระเครื่องแท้`,
     template: `%s | ${storeName}`,
   },
   description:

@@ -54,7 +54,7 @@ export function PaymentPanel({
   if (status === 'PENDING_REVIEW') {
     return (
       <div className="rounded-md bg-warning/10 px-4 py-3 text-sm font-medium text-warning-emphasis">
-        ⏳ ได้รับสลิปแล้ว กำลังรอแอดมินตรวจสอบ — สถานะจะอัปเดตอัตโนมัติ
+        ⏳ ได้รับสลิปแล้ว กำลังรอแอดมินตรวจสอบ · สถานะจะอัปเดตอัตโนมัติ
       </div>
     );
   }
@@ -63,7 +63,7 @@ export function PaymentPanel({
     <div className="space-y-4">
       {status === 'REJECTED' && (
         <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          สลิปก่อนหน้าไม่ผ่านการตรวจสอบ{rejectReason ? `: ${rejectReason}` : ''} — กรุณาอัปโหลดใหม่
+          สลิปก่อนหน้าไม่ผ่านการตรวจสอบ{rejectReason ? `: ${rejectReason}` : ''} · กรุณาอัปโหลดใหม่
         </div>
       )}
 
@@ -87,7 +87,7 @@ export function PaymentPanel({
           {bankAccounts.map((acc) => (
             <div key={acc.number} className="flex items-center justify-between gap-2 text-sm">
               <span>
-                <span className="font-medium">{acc.bank}</span> — {acc.name}
+                <span className="font-medium">{acc.bank}</span> · {acc.name}
                 <br />
                 <span className="tabular-nums">{acc.number}</span>
               </span>

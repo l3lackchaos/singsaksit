@@ -51,7 +51,7 @@ export default async function AdminOrderDetail({
         <h2 className="mb-3 font-semibold">จัดส่ง</h2>
         {order.shipment?.trackingNo ? (
           <p className="text-sm">
-            จัดส่งแล้วผ่าน {order.shipment.carrier} — เลขพัสดุ{' '}
+            จัดส่งแล้วผ่าน {order.shipment.carrier} · เลขพัสดุ{' '}
             <span className="font-medium">{order.shipment.trackingNo}</span>
           </p>
         ) : canShip ? (

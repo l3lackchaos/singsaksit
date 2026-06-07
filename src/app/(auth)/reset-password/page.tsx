@@ -25,7 +25,7 @@ export default function ResetPasswordPage() {
       const supabase = createSupabaseBrowserClient();
       const { error: err } = await supabase.auth.updateUser({ password });
       if (err) {
-        setError('ตั้งรหัสผ่านใหม่ไม่สำเร็จ — ลิงก์อาจหมดอายุ');
+        setError('ตั้งรหัสผ่านใหม่ไม่สำเร็จ · ลิงก์อาจหมดอายุ');
         return;
       }
       setDone(true);

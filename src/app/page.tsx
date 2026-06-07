@@ -44,7 +44,7 @@ export default async function HomePage() {
         </div>
       )}
 
-      {/* Hero — centered + generous air (calm, sacred). Rhythm via varied gaps:
+      {/* Hero · centered + generous air (calm, sacred). Rhythm via varied gaps:
           tight badge→title, then a deliberate jump before the call to action. */}
       <section className="relative overflow-hidden border-b bg-gradient-to-b from-secondary/60 to-background">
         <div className="reveal container flex flex-col items-center py-[clamp(4.5rem,11vw,9rem)] text-center">
@@ -70,7 +70,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Trust band — a distinct muted band (rhythm contrast), columns split by
+      {/* Trust band · a distinct muted band (rhythm contrast), columns split by
           hairline dividers rather than repeated boxes. */}
       <section className="border-b bg-muted/30">
         <div className="container grid divide-y md:grid-cols-3 md:divide-x md:divide-y-0">

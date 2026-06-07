@@ -49,7 +49,7 @@ export default async function OrderDetailPage({
             <OrderStatusTimeline status={order.status} />
             {order.shipment?.trackingNo && (
               <p className="mt-4 text-sm">
-                ขนส่ง: {order.shipment.carrier} — เลขพัสดุ{' '}
+                ขนส่ง: {order.shipment.carrier} · เลขพัสดุ{' '}
                 <span className="font-medium">{order.shipment.trackingNo}</span>
               </p>
             )}
