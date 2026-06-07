@@ -22,6 +22,9 @@ export function SiteHeader() {
           <Link href="/about" className="hover:text-primary">
             เกี่ยวกับเรา
           </Link>
+          <Link href="/contact" className="hover:text-primary">
+            ติดต่อเรา
+          </Link>
         </nav>
 
         <div className="flex items-center gap-1">

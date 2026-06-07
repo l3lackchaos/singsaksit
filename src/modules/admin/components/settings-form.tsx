@@ -38,6 +38,39 @@ export function SettingsForm({ settings }: { settings: Record<string, unknown> }
         <Input id="store.name" name="store.name" defaultValue={str('store.name', 'สิ่งศักดิ์สิทธิ์')} />
       </div>
 
+      <fieldset className="grid gap-4 rounded-lg border p-4">
+        <legend className="px-1 text-sm font-medium">ช่องทางติดต่อ</legend>
+        <div className="grid gap-2">
+          <Label htmlFor="contact.email">อีเมลติดต่อ (รับข้อความจากแบบฟอร์มติดต่อ)</Label>
+          <Input
+            id="contact.email"
+            name="contact.email"
+            type="email"
+            defaultValue={str('contact.email')}
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="contact.phone">เบอร์โทรศัพท์</Label>
+          <Input id="contact.phone" name="contact.phone" defaultValue={str('contact.phone')} />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="contact.lineId">LINE ID</Label>
+          <Input id="contact.lineId" name="contact.lineId" defaultValue={str('contact.lineId')} />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="contact.facebookUrl">ลิงก์ Facebook</Label>
+          <Input
+            id="contact.facebookUrl"
+            name="contact.facebookUrl"
+            defaultValue={str('contact.facebookUrl')}
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="contact.hours">เวลาทำการ</Label>
+          <Input id="contact.hours" name="contact.hours" defaultValue={str('contact.hours')} />
+        </div>
+      </fieldset>
+
       <fieldset className="grid gap-2 rounded-lg border p-4">
         <legend className="px-1 text-sm font-medium">การแสดงผล</legend>
         <Toggle name="display.showStock" label="แสดงจำนวนสต็อก" defaultChecked={bool('display.showStock', true)} />

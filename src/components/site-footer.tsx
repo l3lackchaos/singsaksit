@@ -28,6 +28,11 @@ export function SiteFooter() {
                 เกี่ยวกับเรา
               </Link>
             </li>
+            <li>
+              <Link href="/contact" className="transition-colors hover:text-footer-accent">
+                ติดต่อเรา
+              </Link>
+            </li>
           </ul>
         </nav>
         <nav className="text-sm" aria-label="นโยบาย">

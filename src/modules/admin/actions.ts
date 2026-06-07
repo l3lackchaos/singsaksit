@@ -405,6 +405,11 @@ export async function updateSettingsAction(
 
   const updates: Array<{ key: string; value: unknown }> = [
     { key: 'store.name', value: String(formData.get('store.name') ?? 'สิ่งศักดิ์สิทธิ์') },
+    { key: 'contact.email', value: String(formData.get('contact.email') ?? '') },
+    { key: 'contact.phone', value: String(formData.get('contact.phone') ?? '') },
+    { key: 'contact.lineId', value: String(formData.get('contact.lineId') ?? '') },
+    { key: 'contact.facebookUrl', value: String(formData.get('contact.facebookUrl') ?? '') },
+    { key: 'contact.hours', value: String(formData.get('contact.hours') ?? '') },
     { key: 'display.showStock', value: formData.get('display.showStock') === 'on' },
     { key: 'display.lowStockBadge', value: formData.get('display.lowStockBadge') === 'on' },
     { key: 'theme.default', value: String(formData.get('theme.default') ?? 'system') },
