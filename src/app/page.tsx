@@ -1,15 +1,28 @@
 import Link from 'next/link';
-import { ShieldCheck, BadgeCheck, Truck } from 'lucide-react';
+import { ShieldCheck, BadgeCheck, Truck, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getSetting } from '@/lib/settings';
 import { loadSettings } from '@/modules/settings/load';
 import { listPublishedBanners } from '@/modules/cms/repository';
+import { listActiveProducts } from '@/modules/catalog/repository';
+import { ProductCard } from '@/modules/catalog/components/product-card';
+import { FeaturedCarousel } from '@/modules/catalog/components/featured-carousel';
 import { env } from '@/lib/env';
 
 export default async function HomePage() {
   await loadSettings();
   const storeName = getSetting('store.name');
-  const banners = await listPublishedBanners();
+  const showStock = getSetting('display.showStock');
+  const lowStockBadge = getSetting('display.lowStockBadge');
+  const [banners, products] = await Promise.all([
+    listPublishedBanners(),
+    listActiveProducts({ sort: 'new' }),
+  ]);
+
+  // Prefer products with imagery in the carousel; fall back to the latest few.
+  const withImages = products.filter((p) => p.imagePath);
+  const featured = (withImages.length > 0 ? withImages : products).slice(0, 5);
+  const latest = products.slice(0, 8);
 
   const orgJsonLd = {
     '@context': 'https://schema.org',
@@ -70,6 +83,24 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Featured carousel · large swipeable spotlight for hand-picked pieces. */}
+      {featured.length > 0 && (
+        <section className="border-b">
+          <div className="container py-12 md:py-16">
+            <div className="mb-6 flex items-end justify-between gap-4">
+              <h2 className="text-2xl font-bold tracking-tight md:text-3xl">พระเครื่องแนะนำ</h2>
+              <Link
+                href="/products"
+                className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary hover:underline"
+              >
+                ดูทั้งหมด <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+            <FeaturedCarousel products={featured} />
+          </div>
+        </section>
+      )}
+
       {/* Trust band · a distinct muted band (rhythm contrast), columns split by
           hairline dividers rather than repeated boxes. */}
       <section className="border-b bg-muted/30">
@@ -95,6 +126,31 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* New arrivals · the product list grid. */}
+      {latest.length > 0 && (
+        <section className="container py-12 md:py-16">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <h2 className="text-2xl font-bold tracking-tight md:text-3xl">พระเครื่องมาใหม่</h2>
+            <Link
+              href="/products"
+              className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary hover:underline"
+            >
+              ดูทั้งหมด <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="stagger grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            {latest.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                showStock={showStock}
+                lowStockBadge={lowStockBadge}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }
