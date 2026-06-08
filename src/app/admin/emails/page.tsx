@@ -1,3 +1,4 @@
+import { AdminHelp, EmailPreview } from '@/modules/admin/components/admin-help';
 import Link from 'next/link';
 import { listEmailTemplates } from '@/modules/admin/repository';
 
@@ -6,6 +7,12 @@ export default async function AdminEmailsPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold tracking-tight">เทมเพลตอีเมล</h1>
+      <div className="mt-6">
+        <AdminHelp
+          what="แก้หัวข้อและเนื้อหาอีเมลที่ส่งถึงลูกค้าอัตโนมัติ เช่น ยืนยันการชำระเงิน แจ้งจัดส่ง ใช้ตัวแปรอย่าง orderNo ได้ ระบบส่งให้เองตามสถานะออเดอร์"
+          preview={<EmailPreview />}
+        />
+      </div>
       <p className="mt-1 text-sm text-muted-foreground">
         แก้หัวข้อ/เนื้อหาอีเมลที่ส่งให้ลูกค้าได้เอง
       </p>

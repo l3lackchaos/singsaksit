@@ -1,3 +1,4 @@
+import { AdminHelp, ProductPreview } from '@/modules/admin/components/admin-help';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { listAllProducts } from '@/modules/admin/repository';
@@ -22,6 +23,12 @@ export default async function AdminProductsPage() {
             <Plus className="h-4 w-4" /> เพิ่มสินค้า
           </Link>
         </Button>
+      </div>
+      <div className="mt-6">
+        <AdminHelp
+          what="เพิ่มหรือแก้ไขสินค้า (ชื่อ ราคา สต็อก รูป สถานะ) เมื่อตั้งสถานะเป็นเผยแพร่ (ACTIVE) สินค้าจะแสดงในหน้าร้านและค้นหาได้ทันที และสต็อกจะถูกตัดอัตโนมัติเมื่อยืนยันการชำระเงิน"
+          preview={<ProductPreview />}
+        />
       </div>
       <ul className="mt-6 divide-y rounded-lg border">
         {products.map((p) => (

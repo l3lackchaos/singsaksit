@@ -2,10 +2,9 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
-import { Pencil, Trash2, Eye, EyeOff, X } from 'lucide-react';
+import { Pencil, Trash2, X } from 'lucide-react';
 import {
   updateBannerAction,
-  toggleBannerAction,
   deleteBannerAction,
 } from '@/modules/admin/actions';
 import { Button } from '@/components/ui/button';
@@ -120,16 +119,6 @@ export function BannerManager({ banners }: { banners: BannerRow[] }) {
                 >
                   {b.published ? 'เผยแพร่' : 'ฉบับร่าง'}
                 </span>
-                <Button
-                  type="button"
-                  size="icon"
-                  variant="ghost"
-                  aria-label={b.published ? 'ซ่อน' : 'เผยแพร่'}
-                  disabled={pending}
-                  onClick={() => run(() => toggleBannerAction(b.id, !b.published))}
-                >
-                  {b.published ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </Button>
                 <Button
                   type="button"
                   size="icon"

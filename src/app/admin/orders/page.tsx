@@ -1,3 +1,4 @@
+import { AdminHelp, OrderPreview } from '@/modules/admin/components/admin-help';
 import Link from 'next/link';
 import { listAllOrders } from '@/modules/admin/repository';
 import { ORDER_STATUS_LABEL, PAYMENT_STATUS_LABEL } from '@/modules/orders/labels';
@@ -8,6 +9,12 @@ export default async function AdminOrdersPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold tracking-tight">คำสั่งซื้อทั้งหมด</h1>
+      <div className="mt-6">
+        <AdminHelp
+          what="ดูคำสั่งซื้อทั้งหมด คลิกเข้าไปเพื่อบันทึกเลขพัสดุ (จัดส่ง) หรือคืนเงิน สถานะที่เปลี่ยนจะแจ้งลูกค้าแบบเรียลไทม์"
+          preview={<OrderPreview />}
+        />
+      </div>
       <ul className="mt-6 divide-y rounded-lg border">
         {orders.map((o) => (
           <li key={o.id}>

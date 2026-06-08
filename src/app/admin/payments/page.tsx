@@ -1,3 +1,4 @@
+import { AdminHelp, PaymentPreview } from '@/modules/admin/components/admin-help';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { listReviewQueue } from '@/modules/admin/repository';
 import { PaymentReviewActions } from '@/modules/admin/components/payment-review-actions';
@@ -23,6 +24,12 @@ export default async function AdminPaymentsPage() {
     <div>
       <RealtimeRefresh table="Payment" channel="admin-payments" />
       <h1 className="text-2xl font-bold tracking-tight">ตรวจสอบสลิป</h1>
+      <div className="mt-6">
+        <AdminHelp
+          what="ตรวจสลิปที่ลูกค้าอัปโหลด กดยืนยันแล้วออเดอร์จะกลายเป็นชำระแล้วและตัดสต็อกอัตโนมัติ กดปฏิเสธเพื่อให้ลูกค้าอัปสลิปใหม่ (อัปเดตให้ลูกค้าเห็นแบบเรียลไทม์)"
+          preview={<PaymentPreview />}
+        />
+      </div>
       <p className="mt-1 text-sm text-muted-foreground">
         รายการที่รอการยืนยัน ({withSlips.length})
       </p>

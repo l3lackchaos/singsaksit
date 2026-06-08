@@ -1,3 +1,4 @@
+import { AdminHelp, LinkPreview } from '@/modules/admin/components/admin-help';
 import { listShortLinks } from '@/modules/admin/repository';
 import { ShortLinkForm } from '@/modules/admin/components/short-link-form';
 import { env } from '@/lib/env';
@@ -7,6 +8,12 @@ export default async function AdminLinksPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold tracking-tight">ระบบย่อลิงก์</h1>
+      <div className="mt-6">
+        <AdminHelp
+          what="สร้างลิงก์สั้น /s/โค้ด ที่พาไปยังปลายทางที่กำหนด พร้อมนับจำนวนคลิก เหมาะกับแชร์โปรโมชันหรือสินค้าในช่องทางต่าง ๆ"
+          preview={<LinkPreview />}
+        />
+      </div>
       <div className="mt-6">
         <ShortLinkForm />
       </div>

@@ -1,3 +1,4 @@
+import { AdminHelp, DashboardPreview } from '@/modules/admin/components/admin-help';
 import Link from 'next/link';
 import { getDashboardStats } from '@/modules/admin/repository';
 
@@ -13,6 +14,12 @@ export default async function AdminDashboard() {
   return (
     <div>
       <h1 className="text-2xl font-bold tracking-tight">ภาพรวม</h1>
+      <div className="mt-6">
+        <AdminHelp
+          what="หน้านี้สรุปสถานะร้านแบบรวดเร็ว เช่น จำนวนสลิปที่รอตรวจ ออเดอร์ที่ชำระแล้ว สินค้า และสมาชิก คลิกการ์ดเพื่อไปยังหน้านั้น (หน้านี้ดูอย่างเดียว ไม่ต้องแก้ไข)"
+          preview={<DashboardPreview />}
+        />
+      </div>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
           <Link
