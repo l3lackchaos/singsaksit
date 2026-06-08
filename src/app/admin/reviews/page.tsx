@@ -1,3 +1,4 @@
+import { AdminHelp, ReviewPreview } from '@/modules/admin/components/admin-help';
 import { listPendingReviews } from '@/modules/reviews/repository';
 import { Stars } from '@/modules/reviews/components/stars';
 import { ModerationActions } from '@/modules/reviews/components/moderation-actions';
@@ -7,6 +8,12 @@ export default async function AdminReviewsPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold tracking-tight">รีวิวที่รออนุมัติ</h1>
+      <div className="mt-6">
+        <AdminHelp
+          what="อนุมัติหรือปฏิเสธรีวิวจากลูกค้า (รีวิวต้องมาจากผู้ที่ซื้อจริง) เมื่ออนุมัติ รีวิวจะแสดงใต้สินค้าและนับรวมเป็นคะแนนเฉลี่ย"
+          preview={<ReviewPreview />}
+        />
+      </div>
       <p className="mt-1 text-sm text-muted-foreground">{reviews.length} รายการ</p>
 
       {reviews.length === 0 ? (

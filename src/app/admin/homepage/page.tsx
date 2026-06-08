@@ -1,3 +1,4 @@
+import { AdminHelp, HomepagePreview } from '@/modules/admin/components/admin-help';
 import { getAllSettings } from '@/modules/admin/repository';
 import { HeroForm } from '@/modules/admin/components/hero-form';
 import { CarouselAdsManager } from '@/modules/admin/components/carousel-ads-manager';
@@ -21,6 +22,12 @@ export default async function AdminHomepagePage() {
     <div className="space-y-10">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">จัดการหน้าแรก</h1>
+      <div className="mt-6">
+        <AdminHelp
+          what="แก้ข้อความส่วนหัว (Hero) และจัดการสไลด์โฆษณา เมื่อบันทึกหรือเพิ่มสไลด์ จะแสดงบนหน้าแรกทันที (ถ้ามีสไลด์ตั้งแต่ 1 รายการ จะแสดงแทนการสุ่มสินค้าอัตโนมัติ)"
+          preview={<HomepagePreview />}
+        />
+      </div>
         <p className="mt-1 text-sm text-muted-foreground">
           ปรับข้อความ Hero และสไลด์โฆษณาบนหน้าแรกได้เองโดยไม่ต้องแก้โค้ด
         </p>

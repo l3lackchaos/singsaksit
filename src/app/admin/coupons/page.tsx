@@ -1,3 +1,4 @@
+import { AdminHelp, CouponPreview } from '@/modules/admin/components/admin-help';
 import { listCoupons } from '@/modules/admin/repository';
 import { CouponForm } from '@/modules/admin/components/coupon-form';
 import { CouponToggle } from '@/modules/admin/components/coupon-toggle';
@@ -14,6 +15,12 @@ export default async function AdminCouponsPage() {
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold tracking-tight">คูปองส่วนลด</h1>
+      <div className="mt-6">
+        <AdminHelp
+          what="สร้างโค้ดส่วนลด (เปอร์เซ็นต์ / จำนวนเงิน / ส่งฟรี) พร้อมกำหนดลิมิตการใช้ ลูกค้านำโค้ดไปกรอกตอนชำระเงินเพื่อรับส่วนลด เปิด/ปิดโค้ดได้ทุกเมื่อ"
+          preview={<CouponPreview />}
+        />
+      </div>
       <CouponForm />
       <ul className="divide-y rounded-lg border">
         {coupons.map((c) => (

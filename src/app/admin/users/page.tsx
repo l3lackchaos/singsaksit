@@ -1,3 +1,4 @@
+import { AdminHelp, UserPreview } from '@/modules/admin/components/admin-help';
 import { listUsers } from '@/modules/admin/repository';
 import { RoleSelect } from '@/modules/admin/components/role-select';
 
@@ -6,6 +7,12 @@ export default async function AdminUsersPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold tracking-tight">ผู้ใช้และสิทธิ์</h1>
+      <div className="mt-6">
+        <AdminHelp
+          what="จัดการสิทธิ์ของแต่ละบัญชี เปลี่ยนเป็น ADMIN เพื่อให้เข้าหลังบ้านได้ หรือกำหนดเป็น STAFF/CUSTOMER ตามบทบาท เปลี่ยนแล้วมีผลทันที"
+          preview={<UserPreview />}
+        />
+      </div>
       <p className="mt-1 text-sm text-muted-foreground">{users.length} บัญชี</p>
       <ul className="mt-6 divide-y rounded-lg border">
         {users.map((u) => (
