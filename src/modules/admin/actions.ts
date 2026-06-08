@@ -558,3 +558,67 @@ export async function removeCarouselAdAction(id: string): Promise<ActionResult> 
   revalidatePath('/admin/homepage');
   return { success: 'ลบสไลด์แล้ว' };
 }
+
+// ---- Announcement banner CRUD ----------------------------------------------
+
+export async function updateBannerAction(
+  _prev: ActionResult,
+  formData: FormData,
+): Promise<ActionResult> {
+  await requireAdmin();
+  const schema = z.object({
+    id: z.string().min(1),
+    title: z.string().min(1, 'กรุณากรอกหัวข้อ').max(200),
+    body: z.string().max(500).optional(),
+    href: z.string().max(500).optional(),
+    published: z.boolean(),
+  });
+  const parsed = schema.safeParse({
+    id: formData.get('id'),
+    title: formData.get('title'),
+    body: formData.get('body') || '',
+    href: formData.get('href') || '',
+    published: formData.get('published') === 'on',
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'ข้อมูลไม่ถูกต้อง' };
+
+  const sb = await createSupabaseServerClient();
+  const { error } = await sb
+    .from('Banner')
+    .update({
+      title: parsed.data.title,
+      body: parsed.data.body ?? '',
+      href: parsed.data.href || null,
+      published: parsed.data.published,
+      updatedAt: new Date().toISOString(),
+    })
+    .eq('id', parsed.data.id);
+  if (error) return { error: error.message };
+
+  revalidatePath('/admin/banners');
+  revalidatePath('/', 'layout');
+  return { success: 'บันทึกแบนเนอร์แล้ว' };
+}
+
+export async function toggleBannerAction(id: string, published: boolean): Promise<ActionResult> {
+  await requireAdmin();
+  const sb = await createSupabaseServerClient();
+  const { error } = await sb
+    .from('Banner')
+    .update({ published, updatedAt: new Date().toISOString() })
+    .eq('id', id);
+  if (error) return { error: error.message };
+  revalidatePath('/admin/banners');
+  revalidatePath('/', 'layout');
+  return { success: published ? 'เผยแพร่แล้ว' : 'ซ่อนแล้ว' };
+}
+
+export async function deleteBannerAction(id: string): Promise<ActionResult> {
+  await requireAdmin();
+  const sb = await createSupabaseServerClient();
+  const { error } = await sb.from('Banner').delete().eq('id', id);
+  if (error) return { error: error.message };
+  revalidatePath('/admin/banners');
+  revalidatePath('/', 'layout');
+  return { success: 'ลบแบนเนอร์แล้ว' };
+}
